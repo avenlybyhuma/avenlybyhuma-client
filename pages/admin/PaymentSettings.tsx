@@ -92,8 +92,8 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ isEmbedded = false })
         );
     }
 
-    const stripeSetting = settings.find(s => s.gateway === 'stripe') || {
-        gateway: 'stripe',
+    const paypalSetting = settings.find(s => s.gateway === 'paypal') || {
+        gateway: 'paypal',
         mode: 'test',
         testSecretKey: '',
         testPublishableKey: '',
@@ -124,18 +124,18 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ isEmbedded = false })
                 </div>
             </div>
 
-            {/* Stripe Card */}
+            {/* PayPal Card */}
             <div className="bg-white rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
                 <div className="p-8 border-b border-slate-50 flex items-center justify-between bg-slate-50/50">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
+                        <div className="w-12 h-12 bg-[#0070ba] text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
                             <CreditCard className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">Stripe Gateway</h3>
+                            <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">PayPal Gateway</h3>
                             <div className="flex items-center gap-2 mt-1">
-                                <span className={`w-2 h-2 rounded-full ${stripeSetting.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></span>
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stripeSetting.isActive ? 'Active' : 'Inactive'}</span>
+                                <span className={`w-2 h-2 rounded-full ${paypalSetting.isActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></span>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{paypalSetting.isActive ? 'Active' : 'Inactive'}</span>
                             </div>
                         </div>
                     </div>
@@ -143,11 +143,11 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ isEmbedded = false })
                     <label className="relative inline-flex items-center cursor-pointer">
                         <input
                             type="checkbox"
-                            checked={stripeSetting.isActive}
-                            onChange={e => handleUpdateChange('stripe', 'isActive', e.target.checked)}
+                            checked={paypalSetting.isActive}
+                            onChange={e => handleUpdateChange('paypal', 'isActive', e.target.checked)}
                             className="sr-only peer"
                         />
-                        <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-indigo-600 shadow-inner"></div>
+                        <div className="w-14 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#0070ba] shadow-inner"></div>
                     </label>
                 </div>
 
@@ -157,17 +157,17 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ isEmbedded = false })
                         <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Mode Configuration</label>
                         <div className="grid grid-cols-2 gap-4">
                             <button
-                                onClick={() => handleUpdateChange('stripe', 'mode', 'test')}
-                                className={`p-6 rounded-3xl border-2 transition-all flex items-center justify-center gap-3 ${stripeSetting.mode === 'test'
-                                    ? 'border-indigo-600 bg-indigo-50/30 text-indigo-600 shadow-lg shadow-indigo-100'
+                                onClick={() => handleUpdateChange('paypal', 'mode', 'test')}
+                                className={`p-6 rounded-3xl border-2 transition-all flex items-center justify-center gap-3 ${paypalSetting.mode === 'test'
+                                    ? 'border-[#0070ba] bg-blue-50/30 text-[#0070ba] shadow-lg shadow-blue-100'
                                     : 'border-slate-100 text-slate-400 hover:border-slate-200'}`}
                             >
                                 <Settings2 className="w-5 h-5" />
-                                <span className="font-bold uppercase tracking-widest text-xs">Test Mode</span>
+                                <span className="font-bold uppercase tracking-widest text-xs">Sandbox Mode</span>
                             </button>
                             <button
-                                onClick={() => handleUpdateChange('stripe', 'mode', 'live')}
-                                className={`p-6 rounded-3xl border-2 transition-all flex items-center justify-center gap-3 ${stripeSetting.mode === 'live'
+                                onClick={() => handleUpdateChange('paypal', 'mode', 'live')}
+                                className={`p-6 rounded-3xl border-2 transition-all flex items-center justify-center gap-3 ${paypalSetting.mode === 'live'
                                     ? 'border-rose-600 bg-rose-50/30 text-rose-600 shadow-lg shadow-rose-100'
                                     : 'border-slate-100 text-slate-400 hover:border-slate-200'}`}
                             >
@@ -182,46 +182,28 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ isEmbedded = false })
                         <div className="space-y-6 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all">
                             <h4 className="flex items-center gap-2 text-xs font-bold text-slate-900 uppercase tracking-widest px-2">
                                 <div className="w-2 h-2 rounded-full bg-slate-400"></div>
-                                Test Mode API Keys
+                                Sandbox API Credentials
                             </h4>
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Publishable Key</label>
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Client ID</label>
                                     <input
                                         type="text"
-                                        value={stripeSetting.testPublishableKey}
-                                        onChange={e => handleUpdateChange('stripe', 'testPublishableKey', e.target.value)}
-                                        className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all font-mono"
-                                        placeholder="pk_test_..."
+                                        value={paypalSetting.testPublishableKey}
+                                        onChange={e => handleUpdateChange('paypal', 'testPublishableKey', e.target.value)}
+                                        className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-[#0070ba] transition-all font-mono"
+                                        placeholder="PayPal Sandbox Client ID"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Webhook Secret</label>
-                                    <div className="relative">
-                                        <input
-                                            type={showKeys['testWebhook'] ? 'text' : 'password'}
-                                            value={stripeSetting.testWebhookSecret || ''}
-                                            onChange={e => handleUpdateChange('stripe', 'testWebhookSecret', e.target.value)}
-                                            className="w-full bg-slate-50 border-none rounded-2xl pl-4 pr-12 py-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all font-mono"
-                                            placeholder="whsec_..."
-                                        />
-                                        <button
-                                            onClick={() => toggleKeyVisibility('testWebhook')}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                                        >
-                                            {showKeys['testWebhook'] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Secret Key</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Client Secret</label>
                                     <div className="relative">
                                         <input
                                             type={showKeys['testSecret'] ? 'text' : 'password'}
-                                            value={stripeSetting.testSecretKey}
-                                            onChange={e => handleUpdateChange('stripe', 'testSecretKey', e.target.value)}
-                                            className="w-full bg-slate-50 border-none rounded-2xl pl-4 pr-12 py-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all font-mono"
-                                            placeholder="sk_test_..."
+                                            value={paypalSetting.testSecretKey}
+                                            onChange={e => handleUpdateChange('paypal', 'testSecretKey', e.target.value)}
+                                            className="w-full bg-slate-50 border-none rounded-2xl pl-4 pr-12 py-4 text-sm font-bold focus:ring-2 focus:ring-[#0070ba] transition-all font-mono"
+                                            placeholder="PayPal Sandbox Client Secret"
                                         />
                                         <button
                                             onClick={() => toggleKeyVisibility('testSecret')}
@@ -238,46 +220,28 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ isEmbedded = false })
                         <div className="space-y-6">
                             <h4 className="flex items-center gap-2 text-xs font-bold text-rose-600 uppercase tracking-widest px-2">
                                 <div className="w-2 h-2 rounded-full bg-rose-500"></div>
-                                Live Mode API Keys
+                                Live API Credentials
                             </h4>
                             <div className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Publishable Key</label>
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Client ID</label>
                                     <input
                                         type="text"
-                                        value={stripeSetting.livePublishableKey}
-                                        onChange={e => handleUpdateChange('stripe', 'livePublishableKey', e.target.value)}
+                                        value={paypalSetting.livePublishableKey}
+                                        onChange={e => handleUpdateChange('paypal', 'livePublishableKey', e.target.value)}
                                         className="w-full bg-slate-50 border-none rounded-2xl p-4 text-sm font-bold focus:ring-2 focus:ring-rose-500 transition-all font-mono"
-                                        placeholder="pk_live_..."
+                                        placeholder="PayPal Live Client ID"
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Webhook Secret</label>
-                                    <div className="relative">
-                                        <input
-                                            type={showKeys['liveWebhook'] ? 'text' : 'password'}
-                                            value={stripeSetting.liveWebhookSecret || ''}
-                                            onChange={e => handleUpdateChange('stripe', 'liveWebhookSecret', e.target.value)}
-                                            className="w-full bg-slate-50 border-none rounded-2xl pl-4 pr-12 py-4 text-sm font-bold focus:ring-2 focus:ring-rose-500 transition-all font-mono"
-                                            placeholder="whsec_..."
-                                        />
-                                        <button
-                                            onClick={() => toggleKeyVisibility('liveWebhook')}
-                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                                        >
-                                            {showKeys['liveWebhook'] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Secret Key</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Client Secret</label>
                                     <div className="relative">
                                         <input
                                             type={showKeys['liveSecret'] ? 'text' : 'password'}
-                                            value={stripeSetting.liveSecretKey}
-                                            onChange={e => handleUpdateChange('stripe', 'liveSecretKey', e.target.value)}
+                                            value={paypalSetting.liveSecretKey}
+                                            onChange={e => handleUpdateChange('paypal', 'liveSecretKey', e.target.value)}
                                             className="w-full bg-slate-50 border-none rounded-2xl pl-4 pr-12 py-4 text-sm font-bold focus:ring-2 focus:ring-rose-500 transition-all font-mono"
-                                            placeholder="sk_live_..."
+                                            placeholder="PayPal Live Client Secret"
                                         />
                                         <button
                                             onClick={() => toggleKeyVisibility('liveSecret')}
@@ -292,16 +256,16 @@ const PaymentSettings: React.FC<PaymentSettingsProps> = ({ isEmbedded = false })
                     </div>
 
                     <button
-                        onClick={() => handleSave('stripe')}
+                        onClick={() => handleSave('paypal')}
                         disabled={saving}
-                        className="w-full bg-slate-900 text-white py-6 rounded-3xl font-bold text-[11px] uppercase tracking-[0.3em] shadow-xl shadow-slate-200 hover:bg-indigo-600 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                        className="w-full bg-slate-900 text-white py-6 rounded-3xl font-bold text-[11px] uppercase tracking-[0.3em] shadow-xl shadow-slate-200 hover:bg-[#0070ba] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                     >
                         {saving ? (
                             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
                         ) : (
                             <>
                                 <Save className="w-4 h-4" />
-                                Save Stripe Settings
+                                Save PayPal Settings
                             </>
                         )}
                     </button>

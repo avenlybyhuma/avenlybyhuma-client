@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
     Settings,
     CreditCard,
@@ -16,12 +17,22 @@ import PaymentSettings from './PaymentSettings';
 import ContentManagement from './ContentManagement';
 
 const SettingsOverview: React.FC = () => {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const tabParam = queryParams.get('tab') as any;
+
     const [activeTab, setActiveTab] = useState<'general' | 'payments' | 'flash' | 'footer' | 'hero'>('general');
+
+    useEffect(() => {
+        if (tabParam && ['general', 'payments', 'flash', 'footer', 'hero'].includes(tabParam)) {
+            setActiveTab(tabParam);
+        }
+    }, [tabParam]);
 
     const tabs = [
         { id: 'general', label: 'General Settings', icon: Globe, description: 'Site identity, SEO keywords, and global meta-data.' },
         { id: 'hero', label: 'Hero Content', icon: Layout, description: 'Manage home page slides, headings, and images.' },
-        { id: 'payments', label: 'Payment Methods', icon: CreditCard, description: 'Payment gateways, Stripe keys, and COD management.' },
+        { id: 'payments', label: 'Payment Methods', icon: CreditCard, description: 'Payment gateways, PayPal keys, and COD management.' },
         { id: 'flash', label: 'Flash Sales', icon: Zap, description: 'Flash sale coordination and event triggers.' },
         { id: 'footer', label: 'Footer Management', icon: LayoutTemplate, description: 'Footer text, social media links, and copyright settings.' }
     ] as const;

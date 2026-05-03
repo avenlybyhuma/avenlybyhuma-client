@@ -77,11 +77,14 @@ A professional-grade, high-performance e-commerce ecosystem designed for premium
 - `PUT /api/orders/:id/deliver`: [Admin] Confirm artifact handover.
 - `PUT /api/orders/:id/status`: [Admin] Manual status modulation.
 
-### 💳 Financials & Payments (4)
+### 💳 Financials & Payments (7)
 - `POST /api/payment/create-intent`: Initialize Stripe payment handshake.
 - `POST /api/payment/confirm`: Verify payment settlement.
-- `POST /api/payment/webhook`: Direct Stripe server-to-server confirmation.
-- `POST /api/payment/refund`: [Admin] Process financial return.
+- `POST /api/payment/create-paypal-order`: Initialize PayPal order creation.
+- `POST /api/payment/capture-paypal-order`: Capture PayPal payment and finalize order.
+- `GET /api/payment/settings`: [Admin] Fetch master gateway configuration.
+- `POST /api/payment/settings`: [Admin] Update gateway traits and credentials.
+- `POST /api/payment/refund`: [Admin] Process financial return (Stripe/PayPal).
 
 ### 💬 Social Feedback (5)
 - `GET /api/reviews/product/:productId`: Public feedback stream for an artifact.

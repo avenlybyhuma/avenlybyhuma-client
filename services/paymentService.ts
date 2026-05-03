@@ -27,6 +27,29 @@ export const paymentService = {
         return response.data.data;
     },
 
+    // Create PayPal order
+    createPaypalOrder: async (amount: number, orderId: string): Promise<{
+        orderId: string;
+    }> => {
+        const response = await api.post<
+            ApiResponse<{
+                orderId: string;
+            }>
+        >('/payment/create-paypal-order', {
+            amount,
+            orderId,
+        });
+        return response.data.data;
+    },
+
+    // Capture PayPal order
+    capturePaypalOrder: async (orderId: string): Promise<any> => {
+        const response = await api.post<ApiResponse<any>>('/payment/capture-paypal-order', {
+            orderId,
+        });
+        return response.data.data;
+    },
+
     // Get gateway settings
     getSettings: async (): Promise<GatewaySetting[]> => {
         const response = await api.get<ApiResponse<GatewaySetting[]>>('/payment/settings');

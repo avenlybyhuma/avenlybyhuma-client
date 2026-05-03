@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import StripePaymentForm from '../components/cart/StripePaymentForm';
+import PaypalPaymentForm from '../components/cart/PaypalPaymentForm';
 import { Address } from '../types';
 import { userService } from '../services/userService';
 import Loader from '../components/common/Loader';
@@ -36,6 +37,8 @@ const CheckoutForm: React.FC = () => {
   const [gateways, setGateways] = useState<GatewaySetting[]>([]);
   const [selectedGateway, setSelectedGateway] = useState<string>('');
   const [stripeReady, setStripeReady] = useState(false);
+  const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
+  const [orderReadyForPaypal, setOrderReadyForPaypal] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -68,6 +71,14 @@ const CheckoutForm: React.FC = () => {
             if (pk) {
               stripePromise = loadStripe(pk);
               setStripeReady(true);
+            }
+          }
+
+          const paypalSetting = activeGws.find(g => g.gateway === 'paypal');
+          if (paypalSetting) {
+            const pk = paypalSetting.mode === 'live' ? paypalSetting.livePublishableKey : paypalSetting.testPublishableKey;
+            if (pk) {
+              setPaypalClientId(pk);
             }
           }
         }
@@ -104,7 +115,7 @@ const CheckoutForm: React.FC = () => {
             price: item.price
           })),
         shippingAddress: finalAddress,
-        paymentMethod: selectedGateway === 'stripe' ? 'Stripe' : 'COD' as any,
+        paymentMethod: selectedGateway === 'stripe' ? 'Stripe' : (selectedGateway === 'paypal' ? 'PayPal' : 'COD') as any,
         itemsPrice: subtotal,
         taxPrice: 0,
         shippingPrice: shipping,
@@ -117,6 +128,9 @@ const CheckoutForm: React.FC = () => {
       if (selectedGateway === 'stripe') {
         const { clientSecret: secret } = await paymentService.createPaymentIntent(total, order._id);
         setClientSecret(secret);
+        setIsProcessing(false);
+      } else if (selectedGateway === 'paypal') {
+        setOrderReadyForPaypal(order._id);
         setIsProcessing(false);
       } else {
         // Handle COD or others
@@ -143,10 +157,10 @@ const CheckoutForm: React.FC = () => {
 
       // Update order to paid
       await orderService.updateOrderToPaid(orderId, {
-        id: paymentIntent.id,
+        id: paymentIntent.id || paymentIntent.payment_id || paymentIntent.paymentIntentId,
         status: paymentIntent.status,
         update_time: new Date().toISOString(),
-        email_address: email
+        email_address: email || paymentIntent.email_address
       });
 
       sessionStorage.removeItem('pendingOrderId');
@@ -201,7 +215,7 @@ const CheckoutForm: React.FC = () => {
               </div>
             )}
 
-            {!clientSecret ? (
+            {!clientSecret && !orderReadyForPaypal ? (
               <>
                 {/* Shipping Section */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
@@ -296,8 +310,8 @@ const CheckoutForm: React.FC = () => {
                 {/* Payment Method - Daraz Style Cards */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
                   <h3 className="text-base font-bold text-gray-800 uppercase mb-6 tracking-tight">Select Payment Method</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {gateways.map(gw => (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {gateways.filter(gw => gw.gateway !== 'stripe').map(gw => (
                       <button
                         key={gw.gateway}
                         type="button"
@@ -310,10 +324,12 @@ const CheckoutForm: React.FC = () => {
                           </div>
                         )}
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${selectedGateway === gw.gateway ? 'text-[#f85606]' : 'text-gray-300'}`}>
-                          {gw.gateway === 'stripe' ? <CreditCard className="h-8 w-8" /> : <Banknote className="h-8 w-8" />}
+                          {gw.gateway === 'paypal' ? (
+                            <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" className="h-8" />
+                          ) : <Banknote className="h-8 w-8" />}
                         </div>
                         <span className={`text-[11px] font-bold uppercase tracking-wider ${selectedGateway === gw.gateway ? 'text-[#f85606]' : 'text-gray-400'}`}>
-                          {gw.gateway === 'stripe' ? 'Pay Online' : 'Pay on Delivery'}
+                          {gw.gateway === 'paypal' ? 'Pay with PayPal' : 'Pay on Delivery'}
                         </span>
                       </button>
                     ))}
@@ -329,7 +345,7 @@ const CheckoutForm: React.FC = () => {
                 </div>
 
                 <div className="p-6 bg-[#f7f8fa] rounded-xl border border-gray-100">
-                  {stripePromise && (
+                  {clientSecret && stripePromise && (
                     <Elements stripe={stripePromise}>
                       <StripePaymentForm
                         total={total}
@@ -341,10 +357,22 @@ const CheckoutForm: React.FC = () => {
                       />
                     </Elements>
                   )}
+                  {orderReadyForPaypal && paypalClientId && (
+                    <PaypalPaymentForm
+                      total={total}
+                      orderId={orderReadyForPaypal}
+                      onSuccess={handlePaymentSuccess}
+                      onError={(msg) => setError(msg)}
+                      clientId={paypalClientId}
+                    />
+                  )}
                 </div>
 
                 <button
-                  onClick={() => setClientSecret(null)}
+                  onClick={() => {
+                    setClientSecret(null);
+                    setOrderReadyForPaypal(null);
+                  }}
                   className="mt-8 text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-[#f85606] transition-colors flex items-center gap-2"
                 >
                   ← Modify Order Details
@@ -385,7 +413,7 @@ const CheckoutForm: React.FC = () => {
                 <p className="text-[10px] text-gray-400 font-medium text-right italic">GST Included where applicable</p>
               </div>
 
-              {!clientSecret && (
+              {!clientSecret && !orderReadyForPaypal && (
                 <button
                   onClick={preparePayment}
                   disabled={isProcessing}

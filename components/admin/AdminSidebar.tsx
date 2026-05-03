@@ -32,6 +32,7 @@ const AdminSidebar: React.FC = () => {
         { title: 'Reviews', path: '/admin/reviews', icon: MessageSquare },
         { title: 'Testimonials', path: '/admin/testimonials', icon: MessageCircle },
         { title: 'Shipping Settings', path: '/admin/shipping', icon: Truck },
+        { title: 'Payment Methods', path: '/admin/settings?tab=payments', icon: CreditCard },
         { title: 'Settings', path: '/admin/settings', icon: Settings },
         { title: 'Wishlist', path: '/admin/wishlist', icon: Heart },
         { title: 'Ad Management', path: '/admin/ads', icon: Megaphone },
@@ -40,7 +41,7 @@ const AdminSidebar: React.FC = () => {
     ];
 
     return (
-        <aside className="w-64 bg-slate-900 text-slate-300 h-screen sticky top-0 flex flex-col">
+        <aside className="w-64 bg-slate-900 text-slate-300 h-screen sticky top-0 flex flex-col overflow-y-auto">
             <div className="p-6">
                 <h1 className="text-2xl font-black text-white tracking-tighter uppercase">
                     Avenly by Huma<span className="text-indigo-500">.</span> Admin
