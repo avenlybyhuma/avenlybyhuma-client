@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { CheckCircle, XCircle, Loader, RefreshCw, Mail } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -14,6 +15,7 @@ const VerifyEmail: React.FC = () => {
     const [resendEmail, setResendEmail] = useState('');
     const [resendLoading, setResendLoading] = useState(false);
 
+    const { refreshUser } = useAuth();
     const hasCalled = useRef(false);
 
     useEffect(() => {
@@ -27,14 +29,32 @@ const VerifyEmail: React.FC = () => {
             }
             try {
                 const data = await authService.verifyEmail(token);
-                setVerifiedEmail(data?.email || '');
+                setVerifiedEmail(data?.user?.email || '');
+                
+                // Store tokens for automatic login
+                if (data.accessToken && data.refreshToken && data.user) {
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Update auth context state
+                    await refreshUser();
+                    
+                    toast.success('Successfully logged in!');
+                    
+                    // Optional: Redirect after 3 seconds
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 3000);
+                }
+                
                 setStatus('success');
             } catch (err: any) {
                 setStatus('error');
             }
         };
         verify();
-    }, [token]);
+    }, [token, navigate, refreshUser]);
 
     const handleResend = async () => {
         if (!resendEmail) {
@@ -77,7 +97,7 @@ const VerifyEmail: React.FC = () => {
                             </p>
                         )}
                         <p className="text-gray-500 text-sm mb-8">
-                            Your account is now active. You can log in and start shopping.
+                            Your account is now active. You have been automatically logged in. Redirecting to homepage...
                         </p>
                         <Link
                             to="/"

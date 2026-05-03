@@ -40,8 +40,8 @@ export const authService = {
     },
 
     // Verify email (token from URL query param sent to backend as GET)
-    verifyEmail: async (token: string): Promise<{ email: string }> => {
-        const response = await api.get<ApiResponse<{ email: string }>>(`/auth/verify-email?token=${token}`);
+    verifyEmail: async (token: string): Promise<AuthResponse> => {
+        const response = await api.get<ApiResponse<AuthResponse>>(`/auth/verify-email?token=${token}`);
         return response.data.data;
     },
 
