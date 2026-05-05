@@ -1,6 +1,8 @@
 import api from './api';
 import { Product, ApiResponse } from '../types';
 
+let categoriesPromise: Promise<any[]> | null = null;
+
 export const productService = {
     // Get all products with optional filters
     getProducts: async (params?: {
@@ -65,10 +67,21 @@ export const productService = {
         await api.delete(`/products/${id}`);
     },
 
-    // Category methods
+    // Category methods (Cached to avoid redundant calls from Header/Home)
     getCategories: async (): Promise<any[]> => {
-        const response = await api.get<ApiResponse<{ categories: any[] }>>('/products/categories');
-        return response.data.data.categories;
+        if (categoriesPromise) return categoriesPromise;
+
+        categoriesPromise = (async () => {
+            try {
+                const response = await api.get<ApiResponse<{ categories: any[] }>>('/products/categories');
+                return response.data.data.categories;
+            } catch (err) {
+                categoriesPromise = null;
+                throw err;
+            }
+        })();
+
+        return categoriesPromise;
     },
 
     createCategory: async (categoryData: FormData | any): Promise<any> => {
