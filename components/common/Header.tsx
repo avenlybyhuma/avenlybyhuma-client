@@ -14,8 +14,11 @@ import { Order, Product } from '../../types';
 import ScrollProgressBar from './ScrollProgressBar';
 import ScrollToTop from './ScrollToTop';
 import Loader from './Loader';
+import { useLanguage } from '../../context/LanguageContext';
+
 
 const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
+  const { t, language, setLanguage } = useLanguage();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -190,19 +193,19 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
 
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center space-x-8">
-              <Link to="/" className={linkClass}>Home</Link>
+              <Link to="/" className={linkClass}>{t('nav.home')}</Link>
 
               {/* Categories Dropdown */}
               <div className="relative group/categories h-full flex items-center">
                 <button className={`flex items-center gap-1.5 ${linkClass} group-hover/categories:text-sage`}>
-                  Categories <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover/categories:rotate-180" />
+                  {t('nav.categories')} <ChevronDown className="h-4 w-4 transition-transform duration-300 group-hover/categories:rotate-180" />
                 </button>
 
                 <div className="absolute top-full -left-4 pt-4 opacity-0 translate-y-2 invisible group-hover/categories:opacity-100 group-hover/categories:visible group-hover/categories:translate-y-0 transition-all duration-300 z-[200]">
                   <div className="bg-white border border-secondary/10 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] py-4 min-w-[240px] overflow-hidden backdrop-blur-sm">
                     <div className="px-6 pb-2 mb-2 border-b border-secondary/5">
                       <span className="text-[10px] font-black uppercase tracking-widest text-primary/40 text-left block">
-                        Browse Collections
+                        {t('nav.browseCollections')}
                       </span>
                     </div>
                     {categories.filter(c => c !== 'All').map((cat) => (
@@ -219,8 +222,25 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
                 </div>
               </div>
 
-              <Link to="/products" className={linkClass}>Shop</Link>
-              <Link to="/about" className={linkClass}>Our Story</Link>
+              <Link to="/products" className={linkClass}>{t('nav.shopAll')}</Link>
+              <Link to="/about" className={linkClass}>{t('nav.ourStory')}</Link>
+
+              {/* Language Switcher Desktop */}
+              <div className="flex items-center gap-4 ml-4 pl-4 border-l border-primary/10">
+                <button 
+                  onClick={() => setLanguage('en')}
+                  className={`flex items-center gap-1 text-[10px] font-black tracking-widest transition-colors ${language === 'en' ? 'text-sage' : 'text-primary/40 hover:text-primary'}`}
+                >
+                  <span>🇬🇧</span> EN
+                </button>
+                <span className="text-[10px] text-primary/10">/</span>
+                <button 
+                  onClick={() => setLanguage('sv')}
+                  className={`flex items-center gap-1 text-[10px] font-black tracking-widest transition-colors ${language === 'sv' ? 'text-sage' : 'text-primary/40 hover:text-primary'}`}
+                >
+                  <span>🇸🇪</span> SV
+                </button>
+              </div>
             </nav>
           </div>
 
@@ -251,7 +271,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
               onClick={() => setTrackingModalOpen(true)}
               className="hidden sm:block text-[10px] md:text-xs font-bold uppercase tracking-widest text-primary hover:text-sage transition-colors duration-300"
             >
-              Track
+              {t('nav.track')}
             </button>
 
             {isLoggedIn ? (
@@ -265,7 +285,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
                 onClick={() => setShowLogin(true)}
                 className="hidden sm:block text-xs md:text-sm font-bold uppercase tracking-widest text-primary hover:text-sage transition-colors"
               >
-                Login
+                {t('nav.login')}
               </button>
             )}
 
@@ -290,7 +310,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
               {/* Search Header */}
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-medium text-gray-900">Search Products</h2>
+                  <h2 className="text-lg font-medium text-gray-900">{t('nav.searchProducts')}</h2>
                   <button
                     onClick={() => setSearchOpen(false)}
                     className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -306,7 +326,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
                     <input
                       autoFocus
                       type="text"
-                      placeholder="Search for products..."
+                      placeholder={t('nav.searchPlaceholder')}
                       className="w-full pl-12 pr-4 py-4 text-base text-gray-900 bg-gray-50 border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-sage focus:border-transparent transition-all placeholder:text-gray-400"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -380,7 +400,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
 
               {/* Quick Links/Suggestions */}
               <div className="p-8">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Trending Collections</p>
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">{t('nav.trendingCollections')}</p>
                 <div className="flex flex-wrap gap-2">
                   {['Bedding', 'Towels', 'Organic Cotton', 'Linen Sheets'].map((term) => (
                     <button
@@ -422,9 +442,9 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
           </div>
 
           <nav className="flex flex-col space-y-5 sm:space-y-8">
-            <Link to="/" className="text-xl sm:text-2xl font-serif text-primary hover:text-sage transition-colors" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-            <Link to="/products" className="text-xl sm:text-2xl font-serif text-primary hover:text-sage transition-colors" onClick={() => setMobileMenuOpen(false)}>Shop All</Link>
-            <Link to="/about" className="text-xl sm:text-2xl font-serif text-primary hover:text-sage transition-colors" onClick={() => setMobileMenuOpen(false)}>Our Story</Link>
+            <Link to="/" className="text-xl sm:text-2xl font-serif text-primary hover:text-sage transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.home')}</Link>
+            <Link to="/products" className="text-xl sm:text-2xl font-serif text-primary hover:text-sage transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.shopAll')}</Link>
+            <Link to="/about" className="text-xl sm:text-2xl font-serif text-primary hover:text-sage transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('nav.ourStory')}</Link>
 
             {/* Categories Dropdown */}
             <div className="flex flex-col">
@@ -432,7 +452,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
                 onClick={() => setMobileCategoriesOpen(!mobileCategoriesOpen)}
                 className="text-xl sm:text-2xl font-serif text-primary hover:text-sage transition-colors flex items-center justify-between"
               >
-                <span>Categories</span>
+                <span>{t('nav.categories')}</span>
                 <ChevronDown className={`h-5 w-5 transition-transform duration-300 ${mobileCategoriesOpen ? 'rotate-180' : ''}`} />
               </button>
 
@@ -453,22 +473,38 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
             </div>
           </nav>
 
+          {/* Language Switcher Mobile */}
+          <div className="flex items-center gap-6 mt-8 py-4 border-t border-primary/10">
+            <button 
+              onClick={() => { setLanguage('en'); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-2 text-sm font-black tracking-[0.2em] transition-colors ${language === 'en' ? 'text-sage' : 'text-primary/40 hover:text-primary'}`}
+            >
+              <span>🇬🇧</span> ENGLISH
+            </button>
+            <button 
+              onClick={() => { setLanguage('sv'); setMobileMenuOpen(false); }}
+              className={`flex items-center gap-2 text-sm font-black tracking-[0.2em] transition-colors ${language === 'sv' ? 'text-sage' : 'text-primary/40 hover:text-primary'}`}
+            >
+              <span>🇸🇪</span> SVENSKA
+            </button>
+          </div>
+
           <div className="mt-auto pt-6 sm:pt-8 border-t border-primary/10 space-y-4 sm:space-y-6">
             {!isLoggedIn && (
               <button onClick={() => { setMobileMenuOpen(false); setShowLogin(true); }} className="text-base sm:text-lg font-sans text-primary block flex items-center gap-2">
                 <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Login / Register</span>
+                <span>{t('nav.loginRegister')}</span>
               </button>
             )}
             {isLoggedIn && (
               <div className="flex flex-col gap-3 sm:gap-4">
                 <Link to="/profile" className="text-base sm:text-lg font-sans text-primary flex items-center gap-2">
                   <User className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>My Account</span>
+                  <span>{t('nav.myAccount')}</span>
                 </Link>
                 <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-base sm:text-lg font-sans text-red-500 text-left flex items-center gap-2">
                   <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
-                  <span>Logout</span>
+                  <span>{t('nav.logout')}</span>
                 </button>
               </div>
             )}
@@ -498,13 +534,13 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
             <button onClick={() => setTrackingModalOpen(false)} className="absolute top-4 right-4 text-primary/50 hover:text-primary">
               <X className="w-5 h-5" />
             </button>
-            <h3 className="text-2xl font-serif font-bold text-primary mb-6">Track Your Order</h3>
+            <h3 className="text-2xl font-serif font-bold text-primary mb-6">{t('nav.trackOrder')}</h3>
             <form onSubmit={handleTrackOrder} className="space-y-4">
               <input
                 type="text"
                 value={trackingOrderId}
                 onChange={e => setTrackingOrderId(e.target.value)}
-                placeholder="Order ID"
+                placeholder={t('nav.orderId')}
                 className="w-full bg-white p-3 rounded-md border border-primary/20 outline-none focus:border-sage"
               />
               <button
@@ -512,13 +548,13 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
                 disabled={trackingLoading}
                 className="w-full bg-primary text-sand py-3 rounded-md font-bold uppercase text-xs tracking-widest hover:bg-sage transition-colors"
               >
-                {trackingLoading ? 'Checking...' : 'Track'}
+                {trackingLoading ? t('nav.checking') : t('nav.track')}
               </button>
             </form>
             {trackingError && <p className="mt-4 text-red-500 text-sm text-center">{trackingError}</p>}
             {trackingResult && (
               <div className="mt-6 pt-6 border-t border-primary/10">
-                <p className="font-bold text-primary mb-2">Status: <span className="text-sage">{trackingResult.status}</span></p>
+                <p className="font-bold text-primary mb-2">{t('nav.status')}: <span className="text-sage">{trackingResult.status}</span></p>
                 <p className="text-sm text-primary/70">Total: ${trackingResult.totalPrice.toFixed(2)}</p>
               </div>
             )}

@@ -8,9 +8,11 @@ import { wishlistService } from '../services/wishlistService';
 import { returnService, ReturnRequest } from '../services/returnService';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useLanguage } from '../context/LanguageContext';
 
 const UserProfile: React.FC = () => {
   const { user, logout, isLoggedIn, login, refreshUser } = useAuth();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('orders');
   const [orders, setOrders] = useState<Order[]>([]);
   const [addresses, setAddresses] = useState<Address[]>([]);
@@ -283,11 +285,11 @@ const UserProfile: React.FC = () => {
             </div>
             <nav className="space-y-2">
               {[
-                { id: 'orders', icon: Package, label: 'Order History' },
-                { id: 'wishlist', icon: Heart, label: 'Wishlist' },
-                { id: 'addresses', icon: MapPin, label: 'Addresses' },
-                { id: 'security', icon: Shield, label: 'Security' },
-                { id: 'settings', icon: Settings, label: 'Profile Settings' }
+                { id: 'orders', icon: Package, label: t('profile.orderHistory') },
+                { id: 'wishlist', icon: Heart, label: t('profile.wishlist') },
+                { id: 'addresses', icon: MapPin, label: t('profile.addresses') },
+                { id: 'security', icon: Shield, label: t('profile.security') },
+                { id: 'settings', icon: Settings, label: t('profile.settings') }
               ].map(item => (
                 <button
                   key={item.id}
@@ -306,7 +308,7 @@ const UserProfile: React.FC = () => {
                 className="w-full flex items-center space-x-4 p-5 rounded-2xl text-rose-500 hover:bg-rose-50 font-bold text-[11px] uppercase tracking-widest mt-6"
               >
                 <LogOut className="h-5 w-5" />
-                <span>Logout</span>
+                <span>{t('profile.logout')}</span>
               </button>
             </nav>
           </div>

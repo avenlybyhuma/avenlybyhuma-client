@@ -3,9 +3,12 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
 import { CheckCircle, XCircle, Loader, RefreshCw, Mail } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+
 import toast from 'react-hot-toast';
 
 const VerifyEmail: React.FC = () => {
+    const { t } = useLanguage();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const token = searchParams.get('token');
@@ -40,7 +43,7 @@ const VerifyEmail: React.FC = () => {
                     // Update auth context state
                     await refreshUser();
                     
-                    toast.success('Successfully logged in!');
+                    toast.success(t('auth.signingIn'));
                     
                     // Optional: Redirect after 3 seconds
                     setTimeout(() => {
@@ -58,7 +61,7 @@ const VerifyEmail: React.FC = () => {
 
     const handleResend = async () => {
         if (!resendEmail) {
-            toast.error('Please enter your email address');
+            toast.error(t('auth.enterEmail'));
             return;
         }
         setResendLoading(true);
@@ -80,8 +83,8 @@ const VerifyEmail: React.FC = () => {
                         <div className="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-6">
                             <Loader size={36} className="text-purple-600 animate-spin" />
                         </div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Verifying your email…</h1>
-                        <p className="text-gray-500 text-sm">Please wait a moment.</p>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.verifyingEmail')}</h1>
+                        <p className="text-gray-500 text-sm">{t('auth.waitMoment')}</p>
                     </>
                 )}
 
@@ -90,20 +93,20 @@ const VerifyEmail: React.FC = () => {
                         <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
                             <CheckCircle size={40} className="text-green-500" />
                         </div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Email Verified!</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.emailVerified')}</h1>
                         {verifiedEmail && (
                             <p className="text-purple-700 font-medium text-sm bg-purple-50 px-3 py-1.5 rounded-lg inline-block mb-3">
                                 {verifiedEmail}
                             </p>
                         )}
                         <p className="text-gray-500 text-sm mb-8">
-                            Your account is now active. You have been automatically logged in. Redirecting to homepage...
+                            {t('auth.accountActiveDesc')}
                         </p>
                         <Link
                             to="/"
                             className="inline-block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
                         >
-                            Go to Homepage
+                            {t('auth.goToHome')}
                         </Link>
                     </>
                 )}
@@ -113,9 +116,9 @@ const VerifyEmail: React.FC = () => {
                         <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
                             <XCircle size={40} className="text-red-400" />
                         </div>
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Link Expired or Invalid</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.linkInvalidTitle')}</h1>
                         <p className="text-gray-500 text-sm mb-8">
-                            This verification link has expired or is invalid. Enter your email to get a new one.
+                            {t('auth.linkInvalidDesc')}
                         </p>
                         <div className="text-left space-y-3">
                             <div className="relative">
@@ -124,7 +127,7 @@ const VerifyEmail: React.FC = () => {
                                     type="email"
                                     value={resendEmail}
                                     onChange={(e) => setResendEmail(e.target.value)}
-                                    placeholder="Enter your email"
+                                    placeholder={t('auth.enterEmail')}
                                     className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
                                 />
                             </div>
@@ -134,11 +137,11 @@ const VerifyEmail: React.FC = () => {
                                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                             >
                                 <RefreshCw size={16} className={resendLoading ? 'animate-spin' : ''} />
-                                {resendLoading ? 'Sending…' : 'Resend Verification Email'}
+                                {resendLoading ? t('auth.sending') : t('auth.resendEmail')}
                             </button>
                         </div>
                         <Link to="/" className="inline-block mt-4 text-sm text-gray-400 hover:text-gray-600">
-                            Back to Homepage
+                            {t('auth.backToHome')}
                         </Link>
                     </>
                 )}

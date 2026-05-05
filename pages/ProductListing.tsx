@@ -4,6 +4,7 @@ import ProductCard from '../components/common/ProductCard';
 import { Product } from '../types';
 import { productService } from '../services/productService';
 import Loader from '../components/common/Loader';
+import { useLanguage } from '../context/LanguageContext';
 
 const normalizeProduct = (product: Product): Product => ({
   ...product,
@@ -15,6 +16,7 @@ const normalizeProduct = (product: Product): Product => ({
 });
 
 const ProductListing: React.FC = () => {
+  const { t } = useLanguage();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const initialCategory = searchParams.get('category') || 'All';
@@ -69,19 +71,19 @@ const ProductListing: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-24">
           <div>
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-black text-gray-950 tracking-tighter leading-none mb-4 sm:mb-6">
-              {initialCategory === 'All' ? 'Complete' : initialCategory}
+              {initialCategory === 'All' ? t('products.complete') : initialCategory}
             </h1>
             <div className="flex items-center space-x-4">
               <div className="h-1 w-12 bg-black"></div>
               <p className="text-[10px] font-black uppercase tracking-[0.5em] text-gray-400">
-                {normalizedProducts.length} Results in Collective
+                {normalizedProducts.length} {t('products.resultsCount')}
               </p>
             </div>
           </div>
 
           {initialQuery && (
             <div className="mt-8 md:mt-0 text-[10px] font-black text-indigo-600 uppercase tracking-[0.3em] bg-indigo-50 px-6 py-2 rounded-full">
-              Query: {initialQuery}
+              {t('products.query')}: {initialQuery}
             </div>
           )}
         </div>
@@ -89,8 +91,8 @@ const ProductListing: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
           {normalizedProducts.length === 0 ? (
             <div className="col-span-full py-40 text-center">
-              <p className="text-2xl font-black text-gray-200 uppercase tracking-[0.5em]">No entries found in ledger</p>
-              <Link to="/products" className="mt-8 inline-block text-black font-black border-b-2 border-black pb-1">RESET INDEX</Link>
+              <p className="text-2xl font-black text-gray-200 uppercase tracking-[0.5em]">{t('products.noEntries')}</p>
+              <Link to="/products" className="mt-8 inline-block text-black font-black border-b-2 border-black pb-1">{t('products.resetIndex')}</Link>
             </div>
           ) : (
             normalizedProducts.map(product => (

@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { contentService } from '../services/contentService';
 import Loader from '../components/common/Loader';
 import { FileText } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const TermsOfService: React.FC = () => {
+    const { t } = useLanguage();
     const [content, setContent] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
@@ -31,8 +33,8 @@ const TermsOfService: React.FC = () => {
                         <FileText className="w-8 h-8" />
                     </div>
                     <div>
-                        <h1 className="text-4xl font-serif text-primary">Terms of Service</h1>
-                        <p className="text-primary/50 text-sm mt-1 uppercase tracking-widest">Last Updated: {content?.lastUpdated || new Date().toLocaleDateString()}</p>
+                        <h1 className="text-4xl font-serif text-primary">{t('terms.title')}</h1>
+                        <p className="text-primary/50 text-sm mt-1 uppercase tracking-widest">{t('terms.lastUpdated')}: {content?.lastUpdated || new Date().toLocaleDateString()}</p>
                     </div>
                 </div>
 
@@ -41,14 +43,13 @@ const TermsOfService: React.FC = () => {
                         <div dangerouslySetInnerHTML={{ __html: content.body }} />
                     ) : (
                         <div className="space-y-8">
-                            <p>Welcome to Avenly by Huma. By accessing our website, you agree to comply with and be bound by the following terms and conditions of use.</p>
-                            <h2 className="text-2xl font-serif text-primary mt-8">1. Acceptance of Terms</h2>
-                            <p>By using this site, you signify your acceptance of these terms. If you do not agree, please do not use our site.</p>
-                            <h2 className="text-2xl font-serif text-primary mt-8">2. Intellectual Property</h2>
-                            <p>All content on this site, including text, graphics, logos, and images, is the property of Avenly by Huma and protected by copyright laws.</p>
-                            <h2 className="text-2xl font-serif text-primary mt-8">3. Limitation of Liability</h2>
-                            <p>Avenly by Huma shall not be liable for any direct, indirect, incidental, or consequential damages arising from the use of our products or website.</p>
-                            {/* Fallback text if no backend content exists yet */}
+                            <p>{t('terms.fallbackDesc')}</p>
+                            <h2 className="text-2xl font-serif text-primary mt-8">{t('terms.fallbackSection1')}</h2>
+                            <p>{t('terms.fallbackSection1Desc')}</p>
+                            <h2 className="text-2xl font-serif text-primary mt-8">{t('terms.fallbackSection2')}</h2>
+                            <p>{t('terms.fallbackSection2Desc')}</p>
+                            <h2 className="text-2xl font-serif text-primary mt-8">{t('terms.fallbackSection3')}</h2>
+                            <p>{t('terms.fallbackSection3Desc')}</p>
                         </div>
                     )}
                 </div>

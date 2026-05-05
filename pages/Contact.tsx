@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useLanguage } from '../context/LanguageContext';
+
 
 const Contact: React.FC = () => {
+    const { t } = useLanguage();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -13,7 +16,7 @@ const Contact: React.FC = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // In a real implementation, this would send to a backend endpoint
-        toast.success('Message sent! We\'ll get back to you within 24 hours.');
+        toast.success(t('contact.successMsg'));
         setFormData({ name: '', email: '', subject: '', message: '' });
     };
 
@@ -23,10 +26,10 @@ const Contact: React.FC = () => {
             <section className="bg-sage/10 py-12 px-6">
                 <div className="container mx-auto max-w-4xl text-center">
                     <h1 className="text-5xl md:text-6xl font-serif text-primary mb-6">
-                        Get in Touch
+                        {t('contact.heroTitle')}
                     </h1>
                     <p className="text-lg text-primary/70">
-                        We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                        {t('contact.heroSubtitle')}
                     </p>
                 </div>
             </section>
@@ -37,11 +40,11 @@ const Contact: React.FC = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         {/* Contact Form */}
                         <div className="bg-white p-8 md:p-12 rounded-lg shadow-sm">
-                            <h2 className="text-3xl font-serif text-primary mb-6">Send us a message</h2>
+                            <h2 className="text-3xl font-serif text-primary mb-6">{t('contact.sendAMessage')}</h2>
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-medium text-primary mb-2">
-                                        Your Name *
+                                        {t('contact.yourName')} *
                                     </label>
                                     <input
                                         type="text"
@@ -49,12 +52,12 @@ const Contact: React.FC = () => {
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         className="w-full px-4 py-3 border border-stone-200 rounded focus:outline-none focus:ring-2 focus:ring-sage"
-                                        placeholder="John Doe"
+                                        placeholder={t('contact.namePlaceholder')}
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-primary mb-2">
-                                        Email Address *
+                                        {t('auth.emailAddress')} *
                                     </label>
                                     <input
                                         type="email"
@@ -62,12 +65,12 @@ const Contact: React.FC = () => {
                                         value={formData.email}
                                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                         className="w-full px-4 py-3 border border-stone-200 rounded focus:outline-none focus:ring-2 focus:ring-sage"
-                                        placeholder="john@example.com"
+                                        placeholder={t('auth.emailPlaceholder')}
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-primary mb-2">
-                                        Subject *
+                                        {t('contact.subject')} *
                                     </label>
                                     <input
                                         type="text"
@@ -75,12 +78,12 @@ const Contact: React.FC = () => {
                                         value={formData.subject}
                                         onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                                         className="w-full px-4 py-3 border border-stone-200 rounded focus:outline-none focus:ring-2 focus:ring-sage"
-                                        placeholder="How can we help?"
+                                        placeholder={t('contact.subjectPlaceholder')}
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-primary mb-2">
-                                        Message *
+                                        {t('contact.message')} *
                                     </label>
                                     <textarea
                                         required
@@ -88,7 +91,7 @@ const Contact: React.FC = () => {
                                         value={formData.message}
                                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                         className="w-full px-4 py-3 border border-stone-200 rounded focus:outline-none focus:ring-2 focus:ring-sage resize-none"
-                                        placeholder="Tell us more about your inquiry..."
+                                        placeholder={t('contact.messagePlaceholder')}
                                     ></textarea>
                                 </div>
                                 <button
@@ -96,7 +99,7 @@ const Contact: React.FC = () => {
                                     className="w-full bg-primary text-white px-8 py-4 text-sm uppercase tracking-widest font-bold hover:bg-sage transition-colors flex items-center justify-center gap-2"
                                 >
                                     <Send className="w-4 h-4" />
-                                    Send Message
+                                    {t('contact.sendMessage')}
                                 </button>
                             </form>
                         </div>
@@ -104,9 +107,9 @@ const Contact: React.FC = () => {
                         {/* Contact Information */}
                         <div className="space-y-8">
                             <div>
-                                <h2 className="text-3xl font-serif text-primary mb-6">Contact Information</h2>
+                                <h2 className="text-3xl font-serif text-primary mb-6">{t('contact.contactInfo')}</h2>
                                 <p className="text-primary/70 leading-relaxed mb-8">
-                                    Whether you have a question about our products, sustainability practices, or need assistance with an order, our team is ready to answer all your questions.
+                                    {t('contact.contactInfoDesc')}
                                 </p>
                             </div>
 
@@ -116,9 +119,9 @@ const Contact: React.FC = () => {
                                         <Mail className="w-5 h-5 text-sage" />
                                     </div>
                                     <div>
-                                        <h3 className="font-serif font-medium text-primary mb-1">Email</h3>
-                                        <p className="text-primary/70">support@yumeko.com</p>
-                                        <p className="text-sm text-primary/50 mt-1">We'll respond within 24 hours</p>
+                                        <h3 className="font-serif font-medium text-primary mb-1">{t('contact.email')}</h3>
+                                        <p className="text-primary/70">support@avenly.com</p>
+                                        <p className="text-sm text-primary/50 mt-1">{t('contact.responseTime')}</p>
                                     </div>
                                 </div>
 
@@ -127,9 +130,9 @@ const Contact: React.FC = () => {
                                         <Phone className="w-5 h-5 text-sage" />
                                     </div>
                                     <div>
-                                        <h3 className="font-serif font-medium text-primary mb-1">Phone</h3>
+                                        <h3 className="font-serif font-medium text-primary mb-1">{t('contact.phone')}</h3>
                                         <p className="text-primary/70">+1 (555) 123-4567</p>
-                                        <p className="text-sm text-primary/50 mt-1">Mon-Fri, 9am-6pm EST</p>
+                                        <p className="text-sm text-primary/50 mt-1">{t('contact.phoneHours')}</p>
                                     </div>
                                 </div>
 
@@ -138,7 +141,7 @@ const Contact: React.FC = () => {
                                         <MapPin className="w-5 h-5 text-sage" />
                                     </div>
                                     <div>
-                                        <h3 className="font-serif font-medium text-primary mb-1">Address</h3>
+                                        <h3 className="font-serif font-medium text-primary mb-1">{t('contact.address')}</h3>
                                         <p className="text-primary/70">
                                             123 Sustainable Street<br />
                                             San Francisco, CA 94102<br />
@@ -150,19 +153,19 @@ const Contact: React.FC = () => {
 
                             {/* Business Hours */}
                             <div className="bg-sage/10 p-6 rounded-lg mt-8">
-                                <h3 className="font-serif font-medium text-primary mb-4">Business Hours</h3>
+                                <h3 className="font-serif font-medium text-primary mb-4">{t('contact.businessHours')}</h3>
                                 <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
-                                        <span className="text-primary/70">Monday - Friday</span>
+                                        <span className="text-primary/70">{t('contact.monFri')}</span>
                                         <span className="text-primary font-medium">9:00 AM - 6:00 PM</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-primary/70">Saturday</span>
+                                        <span className="text-primary/70">{t('contact.sat')}</span>
                                         <span className="text-primary font-medium">10:00 AM - 4:00 PM</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-primary/70">Sunday</span>
-                                        <span className="text-primary font-medium">Closed</span>
+                                        <span className="text-primary/70">{t('contact.sun')}</span>
+                                        <span className="text-primary font-medium">{t('contact.closed')}</span>
                                     </div>
                                 </div>
                             </div>

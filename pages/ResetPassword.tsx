@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { Lock, Eye, EyeOff, CheckCircle, ArrowLeft } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+
 import toast from 'react-hot-toast';
 
 const ResetPassword: React.FC = () => {
+    const { t } = useLanguage();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const token = searchParams.get('token');
@@ -22,15 +25,15 @@ const ResetPassword: React.FC = () => {
         setError('');
 
         if (password !== confirmPassword) {
-            setError('Passwords do not match');
+            setError(t('auth.passwordsDoNotMatch'));
             return;
         }
         if (password.length < 6) {
-            setError('Password must be at least 6 characters');
+            setError(t('auth.passwordTooShort'));
             return;
         }
         if (!token) {
-            setError('Invalid or missing reset token. Please use the link from your email.');
+            setError(t('auth.invalidResetToken'));
             return;
         }
 
@@ -52,15 +55,15 @@ const ResetPassword: React.FC = () => {
                     <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle size={40} className="text-green-500" />
                     </div>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Password Reset!</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.passwordResetSuccess')}</h1>
                     <p className="text-gray-500 text-sm mb-8">
-                        Your password has been updated successfully. You can now log in with your new password.
+                        {t('auth.passwordResetSuccessDesc')}
                     </p>
                     <Link
                         to="/"
                         className="inline-block w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
                     >
-                        Go to Homepage & Login
+                        {t('auth.homeAndLogin')}
                     </Link>
                 </div>
             </div>
@@ -74,8 +77,8 @@ const ResetPassword: React.FC = () => {
                     <div className="w-20 h-20 bg-purple-50 rounded-full flex items-center justify-center mx-auto mb-6">
                         <Lock size={36} className="text-purple-600" />
                     </div>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Set New Password</h1>
-                    <p className="text-gray-500 text-sm">Choose a strong password for your account.</p>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.setNewPassword')}</h1>
+                    <p className="text-gray-500 text-sm">{t('auth.setNewPasswordDesc')}</p>
                 </div>
 
                 {error && (
@@ -86,20 +89,20 @@ const ResetPassword: React.FC = () => {
 
                 {!token && (
                     <div className="bg-amber-50 border border-amber-200 text-amber-700 p-3 rounded-xl text-sm mb-4">
-                        ⚠️ Invalid reset link. Please use the link from your email.
+                        ⚠️ {t('auth.invalidResetToken')}
                     </div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">New Password</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('auth.newPassword')}</label>
                         <div className="relative">
                             <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="At least 6 characters"
+                                placeholder={t('auth.passwordPlaceholder')}
                                 className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
                                 required
                                 disabled={loading || !token}
@@ -113,14 +116,14 @@ const ResetPassword: React.FC = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('auth.confirmPassword')}</label>
                         <div className="relative">
                             <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                             <input
                                 type={showConfirm ? 'text' : 'password'}
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                placeholder="Repeat new password"
+                                placeholder={t('auth.repeatNewPassword')}
                                 className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
                                 required
                                 disabled={loading || !token}
@@ -137,12 +140,12 @@ const ResetPassword: React.FC = () => {
                         disabled={loading || !token}
                         className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50 mt-2"
                     >
-                        {loading ? 'Resetting…' : 'Reset Password'}
+                        {loading ? t('auth.resetting') : t('auth.resetPasswordBtn')}
                     </button>
                 </form>
 
                 <Link to="/" className="inline-flex items-center gap-1.5 mt-6 text-sm text-gray-400 hover:text-gray-600">
-                    <ArrowLeft size={14} /> Back to Homepage
+                    <ArrowLeft size={14} /> {t('auth.backToHome')}
                 </Link>
             </div>
         </div>

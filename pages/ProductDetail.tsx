@@ -9,6 +9,8 @@ import { reviewService } from '../services/reviewService';
 import { wishlistService } from '../services/wishlistService';
 import toast from 'react-hot-toast';
 import Loader from '../components/common/Loader';
+import { useLanguage } from '../context/LanguageContext';
+
 
 const normalizeProduct = (product: Product): Product => ({
   ...product,
@@ -22,6 +24,7 @@ const normalizeProduct = (product: Product): Product => ({
 });
 
 const ProductDetail: React.FC = () => {
+  const { t } = useLanguage();
   const { id } = useParams();
   const { addToCart } = useCart();
   const { isLoggedIn, user, refreshUser } = useAuth();
@@ -80,8 +83,8 @@ const ProductDetail: React.FC = () => {
 
   if (error || !product) return (
     <div className="min-h-screen bg-[#eff0f5] py-4 font-sans text-[#212121]">
-      <h2 className="text-2xl font-bold text-gray-900 mb-4">{error || 'Product not found'}</h2>
-      <Link to="/products" className="text-indigo-600 font-bold hover:underline">Back to Products</Link>
+      <h2 className="text-2xl font-bold text-gray-900 mb-4">{error || t('productDetail.noGallery')}</h2>
+      <Link to="/products" className="text-indigo-600 font-bold hover:underline">{t('productDetail.backToProducts')}</Link>
     </div>
   );
 
@@ -90,9 +93,9 @@ const ProductDetail: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 md:pt-10">
       {/* Breadcrumbs */}
       <nav className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-gray-400 mb-8">
-        <Link to="/" className="hover:text-gray-900 transition-colors">Home</Link>
+        <Link to="/" className="hover:text-gray-900 transition-colors">{t('nav.home')}</Link>
         <ChevronRight className="h-3 w-3" />
-        <Link to="/products" className="hover:text-gray-900 transition-colors">Products</Link>
+        <Link to="/products" className="hover:text-gray-900 transition-colors">{t('productDetail.products')}</Link>
         <ChevronRight className="h-3 w-3" />
         <span className="text-gray-900">{product.name}</span>
       </nav>
@@ -112,7 +115,7 @@ const ProductDetail: React.FC = () => {
               ))
             ) : (
               <div className="aspect-square rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 flex items-center justify-center text-gray-300 text-[10px] font-bold uppercase tracking-widest">
-                No Gallery
+                {t('productDetail.noGallery')}
               </div>
             )}
           </div>
@@ -137,7 +140,7 @@ const ProductDetail: React.FC = () => {
               </div>
               <span className="h-1 w-1 rounded-full bg-gray-300" />
               <button className="text-sm font-bold text-indigo-600 hover:underline">
-                {product.reviewsCount} verified reviews
+                {product.reviewsCount} {t('productDetail.verifiedReviews')}
               </button>
             </div>
           </div>
@@ -148,7 +151,7 @@ const ProductDetail: React.FC = () => {
                 <p className="text-4xl font-bold text-rose-600">${(product.price * (1 - product.discount / 100)).toFixed(2)}</p>
                 <div className="flex flex-col">
                   <p className="text-lg font-bold text-gray-400 line-through decoration-rose-400/30">${product.price.toFixed(2)}</p>
-                  <span className="text-[10px] font-black text-rose-600 uppercase tracking-[0.2em]">-{product.discount}% OFF</span>
+                  <span className="text-[10px] font-black text-rose-600 uppercase tracking-[0.2em]">-{product.discount}% {t('productDetail.off')}</span>
                 </div>
               </div>
             ) : (
@@ -162,13 +165,13 @@ const ProductDetail: React.FC = () => {
               <div className="flex items-center space-x-2">
                 <div className={`w-2 h-2 rounded-full ${product.stock > 10 ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`}></div>
                 <p className={`text-[10px] font-bold uppercase tracking-widest ${product.stock > 10 ? 'text-emerald-600' : 'text-amber-600'}`}>
-                  {product.stock > 10 ? 'In Stock' : `Limited Stock: ${product.stock} Units Remaining`}
+                  {product.stock > 10 ? t('productDetail.inStock') : `${t('productDetail.limitedStock')}: ${product.stock} ${t('productDetail.unitsRemaining')}`}
                 </p>
               </div>
             ) : (
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 rounded-full bg-rose-500"></div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-rose-600">Artifact Currently Departed (Out of Stock)</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-rose-600">{t('productDetail.outOfStock')}</p>
               </div>
             )}
           </div>
@@ -198,7 +201,7 @@ const ProductDetail: React.FC = () => {
                 className="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center space-x-3 hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100 disabled:bg-gray-100 disabled:text-gray-400 disabled:shadow-none"
               >
                 <ShoppingCart className="h-6 w-6" />
-                <span>{product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}</span>
+                <span>{product.stock > 0 ? t('productDetail.addToCart') : t('productDetail.outOfStock')}</span>
               </button>
             </div>
 
@@ -221,7 +224,7 @@ const ProductDetail: React.FC = () => {
                 className={`flex-1 flex items-center justify-center space-x-2 border-2 py-3 rounded-2xl font-bold transition-colors ${isWishlisted ? 'border-red-100 bg-red-50 text-red-600' : 'border-gray-100 text-gray-600 hover:bg-gray-50'}`}
               >
                 <Heart className={`h-5 w-5 ${isWishlisted ? 'fill-current' : ''}`} />
-                <span>{isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}</span>
+                <span>{isWishlisted ? t('productDetail.wishlisted') : t('productDetail.addToWishlist')}</span>
               </button>
               <button className="p-3 border-2 border-gray-100 rounded-2xl text-gray-400 hover:bg-gray-50 transition-colors">
                 <Share2 className="h-5 w-5" />
@@ -259,13 +262,13 @@ const ProductDetail: React.FC = () => {
       {/* Tabs */}
       <div className="border-t border-gray-100 sm:pt-16 md:pt-2">
         <div className="flex flex-wrap gap-4 sm:gap-6 md:space-x-8 mb-6 sm:mb-8 md:mb-10 border-b border-gray-100 pb-2">
-          {['Description', 'Specifications', 'Reviews'].map(tab => (
+           {['Description', 'Specifications', 'Reviews'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab.toLowerCase())}
               className={`pb-2 sm:pb-3 md:pb-4 text-xs sm:text-sm font-bold uppercase tracking-widest transition-all relative ${activeTab === tab.toLowerCase() ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-900'}`}
             >
-              {tab}
+              {t(`productDetail.${tab.toLowerCase()}` as any)}
               {activeTab === tab.toLowerCase() && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5 sm:h-1 bg-indigo-600 rounded-t-full" />
               )}
@@ -289,7 +292,7 @@ const ProductDetail: React.FC = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-gray-400 italic">No specifications available for this product.</p>
+                <p className="text-gray-400 italic">{t('productDetail.noSpecs')}</p>
               )}
             </div>
           )}
@@ -303,12 +306,12 @@ const ProductDetail: React.FC = () => {
                       onClick={() => setShowReviewForm(true)}
                       className="bg-indigo-600 text-white px-8 py-3 rounded-full font-bold text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
                     >
-                      Write a Review
+                      {t('productDetail.writeReview')}
                     </button>
                   ) : (
                     <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 max-w-2xl animate-in fade-in slide-in-from-top-4 duration-300">
                       <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-bold text-gray-900 uppercase tracking-tight">Submit Review</h3>
+                        <h3 className="text-xl font-bold text-gray-900 uppercase tracking-tight">{t('productDetail.submitReview')}</h3>
                         <button onClick={() => setShowReviewForm(false)} className="text-gray-400 hover:text-gray-900">
                           <X className="h-5 w-5" />
                         </button>
@@ -347,7 +350,7 @@ const ProductDetail: React.FC = () => {
                       }} className="space-y-6">
                         <div className="flex flex-wrap items-center gap-8">
                           <div>
-                            <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">Rating</label>
+                            <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">{t('productDetail.rating')}</label>
                             <div className="flex space-x-1">
                               {[1, 2, 3, 4, 5].map((star) => (
                                 <button
@@ -363,7 +366,7 @@ const ProductDetail: React.FC = () => {
                           </div>
 
                           <div>
-                            <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">Photos (Max 3)</label>
+                            <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">{t('productDetail.maxPhotos')}</label>
                             <div className="flex gap-2">
                               {imagePreviews.map((preview, i) => (
                                 <div key={i} className="relative w-12 h-12 rounded-lg overflow-hidden group">
@@ -409,13 +412,13 @@ const ProductDetail: React.FC = () => {
                           </div>
                         </div>
 
-                        <div>
-                          <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">Comment</label>
+                         <div>
+                          <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-2">{t('productDetail.comment')}</label>
                           <textarea
                             required
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
-                            placeholder="Share your perspective..."
+                            placeholder={t('productDetail.commentPlaceholder')}
                             className="w-full bg-white border border-gray-100 rounded-2xl p-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500/10 outline-none min-h-[100px]"
                           />
                         </div>
@@ -426,14 +429,14 @@ const ProductDetail: React.FC = () => {
                             onClick={() => setShowReviewForm(false)}
                             className="flex-1 px-6 py-3 border border-gray-200 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-white transition-all"
                           >
-                            Discard
+                            {t('productDetail.discard')}
                           </button>
                           <button
                             type="submit"
                             disabled={submittingReview}
                             className="flex-[2] bg-slate-900 text-white py-3 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-indigo-600 transition-all disabled:opacity-50 shadow-xl shadow-slate-100"
                           >
-                            {submittingReview ? 'Submitting...' : 'Publish Review'}
+                            {submittingReview ? t('nav.checking') : t('productDetail.publishReview')}
                           </button>
                         </div>
                       </form>
@@ -444,9 +447,9 @@ const ProductDetail: React.FC = () => {
 
               {!isLoggedIn && (
                 <div className="bg-gray-50 p-8 rounded-[2.5rem] border border-gray-100 text-center">
-                  <p className="text-gray-500 font-bold mb-4">Want to share your thoughts?</p>
+                  <p className="text-gray-500 font-bold mb-4">{t('productDetail.shareThoughts')}</p>
                   <Link to="/login" className="inline-block bg-black text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-gray-800 transition-all">
-                    Sign in to Review
+                    {t('productDetail.signInToReview')}
                   </Link>
                 </div>
               )}
@@ -456,13 +459,13 @@ const ProductDetail: React.FC = () => {
                   <div className="bg-green-500 rounded-full p-2">
                     <ShieldCheck className="h-5 w-5 text-white" />
                   </div>
-                  <p className="text-green-800 font-bold">You've already contributed your perspective on this product.</p>
+                  <p className="text-green-800 font-bold">{t('productDetail.alreadyReviewed')}</p>
                 </div>
               )}
 
-              <div className="space-y-8">
+               <div className="space-y-8">
                 {reviews.length === 0 ? (
-                  <p className="text-gray-400 italic">No reviews yet for this product.</p>
+                  <p className="text-gray-400 italic">{t('productDetail.noReviews')}</p>
                 ) : (
                   reviews.map(review => (
                     <div key={review._id} className="bg-gray-50 p-8 rounded-3xl">
@@ -477,7 +480,7 @@ const ProductDetail: React.FC = () => {
                           </div>
                           <div>
                             <h6 className="font-bold text-gray-900 text-sm">{review.user.name}</h6>
-                            <span className="text-xs text-gray-400">Verified Purchaser • {new Date(review.createdAt).toLocaleDateString()}</span>
+                            <span className="text-xs text-gray-400">{t('productDetail.verifiedPurchaser')} • {new Date(review.createdAt).toLocaleDateString()}</span>
                           </div>
                         </div>
                         <div className="flex text-yellow-400">

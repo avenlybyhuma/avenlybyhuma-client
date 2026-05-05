@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FAQItem {
     question: string;
@@ -7,40 +8,41 @@ interface FAQItem {
 }
 
 const FAQ: React.FC = () => {
+    const { t } = useLanguage();
     const [openIndex, setOpenIndex] = useState<number | null>(null);
 
     const faqs: FAQItem[] = [
         {
-            question: 'What makes your linens eco-friendly?',
-            answer: 'Our linens are crafted from 100% organic, sustainably sourced materials. We use GOTS-certified organic cotton and European flax, ensuring no harmful chemicals are used in cultivation or processing. Every step of our production adheres to strict environmental standards.'
+            question: t('faq.q1'),
+            answer: t('faq.a1')
         },
         {
-            question: 'How do I care for my linen bedding?',
-            answer: 'Machine wash in cold water on a gentle cycle. Use mild, eco-friendly detergent and avoid bleach. Tumble dry on low or line dry for best results. Linen becomes softer with each wash and doesn\'t require ironing - the natural texture is part of its charm.'
+            question: t('faq.q2'),
+            answer: t('faq.a2')
         },
         {
-            question: 'Do you offer international shipping?',
-            answer: 'Yes! We ship worldwide. Shipping costs and delivery times vary by location. Free shipping is available for orders over $150 within the continental US. International orders may be subject to import duties and taxes.'
+            question: t('faq.q3'),
+            answer: t('faq.a3')
         },
         {
-            question: 'What is your return policy?',
-            answer: 'We offer a 30-day satisfaction guarantee. If you\'re not completely satisfied with your purchase, you can return unwashed and unused items for a full refund. Original shipping costs are non-refundable. Please see our Shipping & Returns page for complete details.'
+            question: t('faq.q4'),
+            answer: t('faq.a4')
         },
         {
-            question: 'Are your products ethically made?',
-            answer: 'Absolutely. We partner with Fair Trade Certified factories that ensure safe working conditions, fair wages, and sustainable practices. We visit our production facilities regularly and maintain transparent relationships with all our suppliers.'
+            question: t('faq.q5'),
+            answer: t('faq.a5')
         },
         {
-            question: 'How long will my order take to arrive?',
-            answer: 'Standard shipping within the US takes 5-7 business days. Express shipping (2-3 business days) is available. International orders typically arrive within 10-15 business days. You\'ll receive tracking information once your order ships.'
+            question: t('faq.q6'),
+            answer: t('faq.a6')
         },
         {
-            question: 'Do your linens come in different sizes?',
-            answer: 'Yes! We offer all standard sizes: Twin, Twin XL, Full, Queen, King, and California King. Custom sizes are available upon request - please contact us for a quote.'
+            question: t('faq.q7'),
+            answer: t('faq.a7')
         },
         {
-            question: 'What thread count are your sheets?',
-            answer: 'Thread count is less meaningful for linen than for cotton. Our linens are measured by weight (GSM - grams per square meter). We use premium 180-220 GSM fabric that provides the perfect balance of breathability, durability, and softness.'
+            question: t('faq.q8'),
+            answer: t('faq.a8')
         }
     ];
 
@@ -54,10 +56,10 @@ const FAQ: React.FC = () => {
             <section className="bg-sage/10 py-20 px-6">
                 <div className="container mx-auto max-w-4xl text-center">
                     <h1 className="text-5xl md:text-6xl font-serif text-primary mb-6">
-                        Frequently Asked Questions
+                        {t('faq.heroTitle')}
                     </h1>
                     <p className="text-lg text-primary/70">
-                        Everything you need to know about our sustainable luxury linens
+                        {t('faq.heroSubtitle')}
                     </p>
                 </div>
             </section>
@@ -100,16 +102,16 @@ const FAQ: React.FC = () => {
                     {/* Contact CTA */}
                     <div className="mt-16 text-center p-8 bg-sage/10 rounded-lg">
                         <h3 className="text-2xl font-serif text-primary mb-4">
-                            Still have questions?
+                            {t('faq.stillQuestions')}
                         </h3>
                         <p className="text-primary/70 mb-6">
-                            Our team is here to help you find the perfect sustainable bedding.
+                            {t('faq.stillQuestionsDesc')}
                         </p>
                         <a
                             href="/#/contact"
                             className="inline-block bg-primary text-white px-8 py-3 text-sm uppercase tracking-widest font-bold hover:bg-sage transition-colors"
                         >
-                            Contact Us
+                            {t('faq.contactUs')}
                         </a>
                     </div>
                 </div>

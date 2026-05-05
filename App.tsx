@@ -13,6 +13,7 @@ import OrderConfirmation from './pages/OrderConfirmation';
 import UserProfile from './pages/UserProfile';
 import { CartProvider, useCart } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 
 // Admin Imports
 import AdminRoute from './components/auth/AdminRoute';
@@ -130,12 +131,14 @@ const AppContent = () => {
 const App = () => {
   return (
     <Router>
-      <AuthProvider>
-        <CartProvider>
-          <Toaster position="bottom-right" reverseOrder={false} />
-          <AppContent />
-        </CartProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Toaster position="bottom-right" reverseOrder={false} />
+            <AppContent />
+          </CartProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </Router>
   );
 };

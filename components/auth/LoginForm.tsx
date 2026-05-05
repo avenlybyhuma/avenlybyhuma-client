@@ -4,6 +4,7 @@ import { authService } from '../../services/authService';
 import { X, Mail, Lock, Eye, EyeOff, AlertTriangle, RefreshCw } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { useLanguage } from '../../context/LanguageContext';
 
 interface LoginFormProps {
     onClose: () => void;
@@ -11,6 +12,7 @@ interface LoginFormProps {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) => {
+    const { t } = useLanguage();
     const { login, loading } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -66,23 +68,23 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegiste
                 </button>
 
                 <div className="text-center mb-8">
-                    <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
-                    <p className="text-gray-400 text-sm mt-1">Sign in to your Avenly account</p>
+                    <h2 className="text-3xl font-bold text-gray-900">{t('auth.welcomeBack')}</h2>
+                    <p className="text-gray-400 text-sm mt-1">{t('auth.signInDesc')}</p>
                 </div>
 
                 {emailNotVerified && (
                     <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4 flex items-start gap-3">
                         <AlertTriangle size={18} className="text-amber-500 flex-shrink-0 mt-0.5" />
                         <div>
-                            <p className="text-amber-800 font-medium text-sm">Email not verified</p>
-                            <p className="text-amber-700 text-xs mt-0.5">Please check your inbox and click the verification link.</p>
+                            <p className="text-amber-800 font-medium text-sm">{t('auth.emailNotVerified')}</p>
+                            <p className="text-amber-700 text-xs mt-0.5">{t('auth.checkInbox')}</p>
                             <button
                                 onClick={handleResend}
                                 disabled={resendLoading}
                                 className="mt-2 flex items-center gap-1.5 text-xs font-semibold text-amber-700 hover:text-amber-900 underline underline-offset-2 disabled:opacity-50"
                             >
                                 <RefreshCw size={12} className={resendLoading ? 'animate-spin' : ''} />
-                                {resendLoading ? 'Sending...' : 'Resend verification email'}
+                                {resendLoading ? t('auth.sending') : t('auth.resendEmail')}
                             </button>
                         </div>
                     </div>
@@ -96,7 +98,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegiste
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('auth.emailAddress')}</label>
                         <div className="relative">
                             <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                             <input
@@ -104,7 +106,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegiste
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm"
-                                placeholder="you@example.com"
+                                placeholder={t('auth.emailPlaceholder')}
                                 required
                                 disabled={loading}
                             />
@@ -113,13 +115,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegiste
 
                     <div>
                         <div className="flex items-center justify-between mb-1.5">
-                            <label className="block text-sm font-medium text-gray-700">Password</label>
+                            <label className="block text-sm font-medium text-gray-700">{t('auth.password')}</label>
                             <Link
                                 to="/forgot-password"
                                 onClick={onClose}
                                 className="text-xs text-purple-600 hover:text-purple-700 font-medium"
                             >
-                                Forgot password?
+                                {t('auth.forgotPassword')}
                             </Link>
                         </div>
                         <div className="relative">
@@ -129,7 +131,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegiste
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 className="w-full pl-10 pr-10 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-sm"
-                                placeholder="Your password"
+                                placeholder={t('auth.passwordPlaceholder')}
                                 required
                                 disabled={loading}
                             />
@@ -151,17 +153,17 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegiste
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                                 </svg>
-                                Signing in...
+                                {t('auth.signingIn')}
                             </span>
-                        ) : 'Log In'}
+                        ) : t('auth.login')}
                     </button>
                 </form>
 
                 <div className="mt-6 text-center">
                     <p className="text-gray-500 text-sm">
-                        Don't have an account?{' '}
+                        {t('auth.noAccount')}{' '}
                         <button onClick={onSwitchToRegister} className="text-purple-600 hover:text-purple-700 font-semibold">
-                            Sign Up
+                            {t('auth.signUp')}
                         </button>
                     </p>
                 </div>

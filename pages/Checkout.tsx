@@ -16,10 +16,13 @@ import { GatewaySetting } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
+import { useLanguage } from '../context/LanguageContext';
+
 // We'll initialize stripePromise dynamically inside the component
 let stripePromise: Promise<any> | null = null;
 
 const CheckoutForm: React.FC = () => {
+  const { t } = useLanguage();
   const { cart, subtotal, tax, shipping, total, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -190,17 +193,17 @@ const CheckoutForm: React.FC = () => {
           <div className="flex items-center w-full">
             <div className="flex flex-col items-center">
               <div className="w-8 h-8 rounded-full bg-[#f85606] text-white flex items-center justify-center text-xs font-bold ring-4 ring-orange-100">1</div>
-              <span className="text-[11px] font-bold mt-2 text-[#f85606]">Cart</span>
+              <span className="text-[11px] font-bold mt-2 text-[#f85606]">{t('checkout.cart')}</span>
             </div>
             <div className="flex-1 h-[2px] bg-[#f85606] mx-4 -mt-6" />
             <div className="flex flex-col items-center">
               <div className="w-8 h-8 rounded-full bg-[#f85606] text-white flex items-center justify-center text-xs font-bold ring-4 ring-orange-100">2</div>
-              <span className="text-[11px] font-bold mt-2 text-[#f85606]">Shipping</span>
+              <span className="text-[11px] font-bold mt-2 text-[#f85606]">{t('checkout.shipping')}</span>
             </div>
             <div className="flex-1 h-[2px] bg-gray-200 mx-4 -mt-6" />
             <div className="flex flex-col items-center opacity-40">
               <div className="w-8 h-8 rounded-full bg-white border-2 border-gray-300 text-gray-400 flex items-center justify-center text-xs font-bold">3</div>
-              <span className="text-[11px] font-bold mt-2">Payment</span>
+              <span className="text-[11px] font-bold mt-2">{t('checkout.payment')}</span>
             </div>
           </div>
         </div>
@@ -220,9 +223,9 @@ const CheckoutForm: React.FC = () => {
                 {/* Shipping Section */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-base font-bold text-gray-800 uppercase tracking-tight">Deliver to:</h3>
+                    <h3 className="text-base font-bold text-gray-800 uppercase tracking-tight">{t('checkout.deliverTo')}</h3>
                     {(addresses.length > 0 || selectedAddressId) && (
-                      <button onClick={() => setSelectedAddressId('')} className="text-[#f85606] text-xs font-bold hover:underline uppercase">Edit</button>
+                      <button onClick={() => setSelectedAddressId('')} className="text-[#f85606] text-xs font-bold hover:underline uppercase">{t('checkout.edit')}</button>
                     )}
                   </div>
 
@@ -239,7 +242,7 @@ const CheckoutForm: React.FC = () => {
                         <p className="text-sm text-gray-600 leading-relaxed">
                           {addresses.find(a => a._id === selectedAddressId)?.streetAddress}, {addresses.find(a => a._id === selectedAddressId)?.city}
                         </p>
-                        <p className="text-xs text-gray-400 mt-1 font-medium italic">Estimated delivery: 3-5 business days</p>
+                        <p className="text-xs text-gray-400 mt-1 font-medium italic">{t('checkout.estimatedDelivery')}</p>
                       </div>
                     </div>
                   ) : (
@@ -250,7 +253,7 @@ const CheckoutForm: React.FC = () => {
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          placeholder="Email Address"
+                          placeholder={t('checkout.emailPlaceholder')}
                           className="w-full bg-white border border-gray-200 p-4 rounded-lg focus:ring-1 focus:ring-[#f85606] focus:border-[#f85606] outline-none text-sm"
                         />
                         <input
@@ -258,7 +261,7 @@ const CheckoutForm: React.FC = () => {
                           type="tel"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          placeholder="Mobile Number"
+                          placeholder={t('checkout.phonePlaceholder')}
                           className="w-full bg-white border border-gray-200 p-4 rounded-lg focus:ring-1 focus:ring-[#f85606] focus:border-[#f85606] outline-none text-sm"
                         />
                       </div>
@@ -266,7 +269,7 @@ const CheckoutForm: React.FC = () => {
                         required
                         value={shippingAddress}
                         onChange={(e) => setShippingAddress(e.target.value)}
-                        placeholder="Full Address (House#, Street, Area, City, Region)"
+                        placeholder={t('checkout.addressPlaceholder')}
                         className="w-full bg-white border border-gray-200 p-4 rounded-lg focus:ring-1 focus:ring-[#f85606] focus:border-[#f85606] outline-none text-sm h-24 resize-none"
                       />
                     </div>
@@ -276,8 +279,8 @@ const CheckoutForm: React.FC = () => {
                 {/* Items Section */}
                 <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
                   <h3 className="text-base font-bold text-gray-800 uppercase mb-6 tracking-tight flex items-center gap-3">
-                    Store Order
-                    <span className="text-[10px] font-bold text-gray-400 normal-case bg-gray-100 px-2 py-1 rounded">Seller: Avenly Home</span>
+                    {t('checkout.storeOrder')}
+                    <span className="text-[10px] font-bold text-gray-400 normal-case bg-gray-100 px-2 py-1 rounded">{t('checkout.seller')}: Avenly Home</span>
                   </h3>
                   <div className="divide-y divide-gray-100">
                     {cart.map(item => {
@@ -292,7 +295,7 @@ const CheckoutForm: React.FC = () => {
                             <h4 className="text-sm font-bold text-gray-800 mb-1 leading-snug group-hover:text-[#f85606] transition-colors">{item.name}</h4>
                             <p className="text-[11px] text-gray-400 font-medium mb-3">Model: Standard Edition | Color: Natural Sand</p>
                             <div className="flex items-center justify-between">
-                              <p className="text-xs text-gray-500">Qty: <span className="text-gray-900 font-bold">{item.quantity}</span></p>
+                              <p className="text-xs text-gray-500">{t('checkout.qty')}: <span className="text-gray-900 font-bold">{item.quantity}</span></p>
                               <div className="text-right">
                                 <p className="text-base font-bold text-[#f85606]">${(item.price * item.quantity).toFixed(2)}</p>
                                 {item.product?.discount > 0 && (

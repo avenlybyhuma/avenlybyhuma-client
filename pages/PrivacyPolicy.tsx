@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { contentService } from '../services/contentService';
 import Loader from '../components/common/Loader';
 import { Shield } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const PrivacyPolicy: React.FC = () => {
+    const { t } = useLanguage();
     const [content, setContent] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
@@ -31,8 +33,8 @@ const PrivacyPolicy: React.FC = () => {
                         <Shield className="w-8 h-8" />
                     </div>
                     <div>
-                        <h1 className="text-4xl font-serif text-primary">Privacy Policy</h1>
-                        <p className="text-primary/50 text-sm mt-1 uppercase tracking-widest">Effective Date: {content?.effectiveDate || new Date().toLocaleDateString()}</p>
+                        <h1 className="text-4xl font-serif text-primary">{t('privacy.title')}</h1>
+                        <p className="text-primary/50 text-sm mt-1 uppercase tracking-widest">{t('privacy.effectiveDate')}: {content?.effectiveDate || new Date().toLocaleDateString()}</p>
                     </div>
                 </div>
 
@@ -41,14 +43,13 @@ const PrivacyPolicy: React.FC = () => {
                         <div dangerouslySetInnerHTML={{ __html: content.body }} />
                     ) : (
                         <div className="space-y-8">
-                            <p>We value your privacy and are committed to protecting your personal data. This Privacy Policy outlines how we collect, use, and safeguard your information when you visit our website.</p>
-                            <h2 className="text-2xl font-serif text-primary mt-8">1. Information Collection</h2>
-                            <p>We collect information you provide directly to us, such as when you create an account, make a purchase, or sign up for our newsletter.</p>
-                            <h2 className="text-2xl font-serif text-primary mt-8">2. Use of Information</h2>
-                            <p>We use your information to provide and improve our services, process transactions, and communicate with you about your orders and promotional offers.</p>
-                            <h2 className="text-2xl font-serif text-primary mt-8">3. Data Security</h2>
-                            <p>We implement robust security measures to protect your data from unauthorized access, alteration, or disclosure.</p>
-                            {/* Fallback text if no backend content exists yet */}
+                            <p>{t('privacy.fallbackDesc')}</p>
+                            <h2 className="text-2xl font-serif text-primary mt-8">{t('privacy.fallbackSection1')}</h2>
+                            <p>{t('privacy.fallbackSection1Desc')}</p>
+                            <h2 className="text-2xl font-serif text-primary mt-8">{t('privacy.fallbackSection2')}</h2>
+                            <p>{t('privacy.fallbackSection2Desc')}</p>
+                            <h2 className="text-2xl font-serif text-primary mt-8">{t('privacy.fallbackSection3')}</h2>
+                            <p>{t('privacy.fallbackSection3Desc')}</p>
                         </div>
                     )}
                 </div>

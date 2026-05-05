@@ -4,8 +4,11 @@ import { Facebook, Twitter, Instagram } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { contentService } from '../../services/contentService';
 import { productService } from '../../services/productService';
+import { useLanguage } from '../../context/LanguageContext';
+
 
 const Footer: React.FC = () => {
+  const { t } = useLanguage();
   const [cmsContent, setCmsContent] = useState<any>(null);
   const [categories, setCategories] = useState<string[]>([]);
 
@@ -38,7 +41,7 @@ const Footer: React.FC = () => {
               {siteSettings?.siteName || 'Avenly by Huma'}
             </Link>
             <p className="text-sand/70 text-sm font-sans leading-relaxed max-w-xs">
-              {footer?.description || 'Curating sustainable luxury for the modern home. Mindfully crafted, ethically sourced.'}
+              {footer?.description || t('footer.description')}
             </p>
             <div className="flex space-x-5">
               {footer?.socialLinks?.facebook && (
@@ -68,9 +71,9 @@ const Footer: React.FC = () => {
 
           {/* Shop */}
           <div>
-            <h4 className="text-sm font-serif font-bold uppercase tracking-wider mb-6 text-sage">Collections</h4>
+            <h4 className="text-sm font-serif font-bold uppercase tracking-wider mb-6 text-sage">{t('footer.collections')}</h4>
             <ul className="space-y-4">
-              <li><Link to="/products" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">Shop All</Link></li>
+              <li><Link to="/products" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">{t('nav.shopAll')}</Link></li>
               {categories.map(cat => (
                 <li key={cat}>
                   <Link to={`/products?category=${cat}`} className="text-sand/70 hover:text-white text-sm font-sans transition-colors">
@@ -83,22 +86,22 @@ const Footer: React.FC = () => {
 
           {/* Support */}
           <div>
-            <h4 className="text-sm font-serif font-bold uppercase tracking-wider mb-6 text-sage">Support</h4>
+            <h4 className="text-sm font-serif font-bold uppercase tracking-wider mb-6 text-sage">{t('footer.support')}</h4>
             <ul className="space-y-4">
-              <li><Link to="/shipping-returns" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">Shipping & Returns</Link></li>
-              <li><Link to="/track-order" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">Track Order</Link></li>
-              <li><Link to="/faq" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">FAQ</Link></li>
-              <li><Link to="/contact" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">Contact Us</Link></li>
-              <li><Link to="/about" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">About Us</Link></li>
+              <li><Link to="/shipping-returns" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">{t('footer.shippingReturns')}</Link></li>
+              <li><Link to="/track-order" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">{t('footer.trackOrder')}</Link></li>
+              <li><Link to="/faq" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">{t('footer.faq')}</Link></li>
+              <li><Link to="/contact" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">{t('footer.contactUs')}</Link></li>
+              <li><Link to="/about" className="text-sand/70 hover:text-white text-sm font-sans transition-colors">{t('footer.aboutUs')}</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-sand/40 font-sans">
-          <p>{footer?.copyrightText || `© ${new Date().getFullYear()} Avenly by Huma. All Rights Reserved.`}</p>
+          <p>{`© ${new Date().getFullYear()} ${siteSettings?.siteName || 'Avenly by Huma'}. ${t('footer.allRightsReserved')}`}</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link to="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+            <Link to="/privacy-policy" className="hover:text-white transition-colors">{t('footer.privacyPolicy')}</Link>
+            <Link to="/terms-of-service" className="hover:text-white transition-colors">{t('footer.termsOfService')}</Link>
           </div>
         </div>
       </div>

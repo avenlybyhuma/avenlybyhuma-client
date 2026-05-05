@@ -11,6 +11,8 @@ import Hero from '../components/sections/Hero';
 import FlashSale from '../components/sections/FlashSale';
 import { motion } from 'framer-motion';
 import Loader from '../components/common/Loader';
+import { useLanguage } from '../context/LanguageContext';
+
 
 const normalizeProduct = (product: any): Product => ({
   ...product,
@@ -22,6 +24,7 @@ const normalizeProduct = (product: any): Product => ({
 });
 
 const Home: React.FC = () => {
+  const { t } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [cmsContent, setCmsContent] = useState<any>(null);
@@ -106,9 +109,9 @@ const Home: React.FC = () => {
         className="py-20 px-6 max-w-7xl mx-auto"
       >
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-serif font-medium mb-4">Our Collections</h2>
+          <h2 className="text-3xl md:text-4xl font-serif font-medium mb-4">{t('home.ourCollections')}</h2>
           <p className="text-primary/60 max-w-lg mx-auto font-sans">
-            Discover our range of sustainable essentials, crafted with care for you and the planet.
+            {t('home.collectionsDesc')}
           </p>
         </div>
 
@@ -151,11 +154,11 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <span className="text-sage text-xs uppercase tracking-widest font-bold block mb-2">Most Loved</span>
-              <h2 className="text-3xl md:text-4xl font-serif font-medium">Bestsellers</h2>
+              <span className="text-sage text-xs uppercase tracking-widest font-bold block mb-2">{t('home.mostLoved')}</span>
+              <h2 className="text-3xl md:text-4xl font-serif font-medium">{t('home.bestsellers')}</h2>
             </div>
             <Link to="/products" className="hidden md:flex items-center gap-2 text-primary/60 hover:text-primary transition-colors text-sm border-b border-transparent hover:border-primary pb-0.5">
-              View All <ArrowRight className="h-4 w-4" />
+              {t('home.viewAll')} <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
@@ -166,7 +169,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="mt-12 text-center md:hidden">
-            <Link to="/products" className="btn-primary inline-flex">View All</Link>
+            <Link to="/products" className="btn-primary inline-flex">{t('home.viewAll')}</Link>
           </div>
         </div>
       </motion.section>
@@ -243,7 +246,7 @@ const Home: React.FC = () => {
                 className="flex items-center gap-4 text-sage mb-8"
               >
                 <span className="w-12 h-[1px] bg-sage/40"></span>
-                <span className="text-[11px] uppercase tracking-[0.4em] font-black">Our Impact</span>
+                <span className="text-[11px] uppercase tracking-[0.4em] font-black">{t('home.ourImpact')}</span>
               </motion.div>
 
               <motion.h2
@@ -254,9 +257,9 @@ const Home: React.FC = () => {
                 transition={{ duration: 1, ease: [0.33, 1, 0.68, 1] }}
                 className="text-6xl md:text-7xl font-serif font-light mb-10 leading-[1.1] text-primary"
               >
-                {impact.title || "Change the World"} <br />
+                {impact.title || t('home.changeTheWorld')} <br />
                 <span className="italic text-primary/60 font-serif block mt-3 indent-8 md:indent-16">
-                  {impact.highlight || "While You Sleep"}
+                  {impact.highlight || t('home.whileYouSleep')}
                 </span>
               </motion.h2>
 
@@ -267,15 +270,15 @@ const Home: React.FC = () => {
                 }}
                 className="text-primary/60 font-sans leading-[1.8] text-lg mb-12 max-w-lg"
               >
-                {impact.description || "We believe that luxury shouldn't cost the earth. That's why every product is crafted from 100% organic, Fairtrade certified materials. We work directly with farmers and artisans to ensure ethical production."}
+                {impact.description || t('home.impactDesc')}
               </motion.p>
 
               {/* Minimalist Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-t border-primary/5 pt-12">
                 {[
-                  { label: "Certified Organic", value: "100%" },
-                  { label: "Zero Plastics", value: "0%" },
-                  { label: "Ethically Made", value: "Fair" }
+                  { label: t('home.certifiedOrganic'), value: "100%" },
+                  { label: t('home.zeroPlastics'), value: "0%" },
+                  { label: t('home.ethicallyMade'), value: "Fair" }
                 ].map((stat, i) => (
                   <motion.div
                     key={i}
@@ -301,7 +304,7 @@ const Home: React.FC = () => {
                   to="/about"
                   className="group inline-flex items-center gap-6 text-xs uppercase tracking-[0.3em] font-black text-primary hover:text-sage transition-all"
                 >
-                  <span className="border-b-2 border-primary/10 group-hover:border-sage pb-2 transition-all">Read Our Story</span>
+                  <span className="border-b-2 border-primary/10 group-hover:border-sage pb-2 transition-all">{t('home.readOurStory')}</span>
                   <div className="w-10 h-10 border border-primary/10 rounded-full flex items-center justify-center group-hover:bg-sage group-hover:border-sage transition-all">
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:text-white" />
                   </div>
