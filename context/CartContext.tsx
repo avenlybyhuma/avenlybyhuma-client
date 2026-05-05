@@ -47,6 +47,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       setLoading(true);
+
+      // --- Merge guest cart into backend ---
+      const savedGuest = localStorage.getItem('cart');
+      const guestItems: CartItem[] = savedGuest ? JSON.parse(savedGuest) : [];
+
+      if (guestItems.length > 0) {
+        // Push each guest item to the backend sequentially
+        for (const item of guestItems) {
+          const productId = item.product?._id || (item.product as any)?.id;
+          if (productId) {
+            try {
+              await cartService.addToCart(productId, item.quantity);
+            } catch (e) {
+              console.warn('Could not merge item:', productId, e);
+            }
+          }
+        }
+        localStorage.removeItem('cart'); // Clear guest cart after merge
+      }
+
+      // Fetch the final merged cart from the backend
       const backendCart = await cartService.getCart();
       const formattedCart: CartItem[] = backendCart.items
         .filter(item => item.product !== null)
@@ -57,7 +78,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           price: item.price,
         }));
       setCart(formattedCart);
-      localStorage.removeItem('cart'); // Clear guest cart
     } catch (err: any) {
       console.error('Failed to sync cart:', err);
       setError(err.response?.data?.message || 'Failed to load cart');
