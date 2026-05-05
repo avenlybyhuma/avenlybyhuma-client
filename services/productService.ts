@@ -67,21 +67,10 @@ export const productService = {
         await api.delete(`/products/${id}`);
     },
 
-    // Category methods (Cached to avoid redundant calls from Header/Home)
+    // Category methods
     getCategories: async (): Promise<any[]> => {
-        if (categoriesPromise) return categoriesPromise;
-
-        categoriesPromise = (async () => {
-            try {
-                const response = await api.get<ApiResponse<{ categories: any[] }>>('/products/categories');
-                return response.data.data.categories;
-            } catch (err) {
-                categoriesPromise = null;
-                throw err;
-            }
-        })();
-
-        return categoriesPromise;
+        const response = await api.get<ApiResponse<{ categories: any[] }>>('/products/categories');
+        return response.data.data.categories;
     },
 
     createCategory: async (categoryData: FormData | any): Promise<any> => {

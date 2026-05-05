@@ -6,22 +6,8 @@ const contentPromises = new Map<string, Promise<any>>();
 
 export const contentService = {
     getContent: async (identifier: string = 'home_page') => {
-        if (contentPromises.has(identifier)) {
-            return contentPromises.get(identifier);
-        }
-
-        const promise = (async () => {
-            try {
-                const response = await api.get<ApiResponse<{ content: any }>>(`/content/${identifier}`);
-                return response.data.data.content;
-            } catch (err) {
-                contentPromises.delete(identifier);
-                throw err;
-            }
-        })();
-
-        contentPromises.set(identifier, promise);
-        return promise;
+        const response = await api.get<ApiResponse<{ content: any }>>(`/content/${identifier}`);
+        return response.data.data.content;
     },
 
     updateContent: async (identifier: string, data: FormData) => {
@@ -30,7 +16,6 @@ export const contentService = {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        contentPromises.delete(identifier); // Invalidate cache
         return response.data.data.content;
     }
 };

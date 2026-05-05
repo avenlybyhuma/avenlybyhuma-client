@@ -31,11 +31,6 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'assets/js/[hash].js',
           entryFileNames: 'assets/js/[hash].js',
           assetFileNames: 'assets/[hash].[ext]',
-          manualChunks: {
-            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-            'vendor-icons': ['lucide-react'],
-            'vendor-utils': ['axios', 'framer-motion'],
-          }
         },
       },
     },
