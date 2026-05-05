@@ -136,6 +136,17 @@ const AppContent = () => {
 };
 
 const App = () => {
+  useEffect(() => {
+    // Hide the initial preloader after React has mounted
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+      preloader.classList.add('fade-out');
+      setTimeout(() => {
+        preloader.remove();
+      }, 500); // Wait for transition
+    }
+  }, []);
+
   return (
     <Router>
       <LanguageProvider>

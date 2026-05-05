@@ -4,6 +4,7 @@ import ProductCard from '../components/common/ProductCard';
 import { Product } from '../types';
 import { productService } from '../services/productService';
 import Loader from '../components/common/Loader';
+import { ProductSkeleton } from '../components/common/Skeleton';
 import { useLanguage } from '../context/LanguageContext';
 
 const normalizeProduct = (product: Product): Product => ({
@@ -55,7 +56,8 @@ const ProductListing: React.FC = () => {
   const normalizedProducts = products.map(normalizeProduct);
 
 
-  if (loading) return <Loader fullPage color="#4A5D4E" />;
+  // Remove early return to show the page structure immediately
+  // if (loading) return <Loader fullPage color="#4A5D4E" />;
 
   if (error) {
     return (
@@ -89,7 +91,9 @@ const ProductListing: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-12">
-          {normalizedProducts.length === 0 ? (
+          {loading ? (
+            Array(8).fill(0).map((_, idx) => <ProductSkeleton key={idx} />)
+          ) : normalizedProducts.length === 0 ? (
             <div className="col-span-full py-40 text-center">
               <p className="text-2xl font-black text-gray-200 uppercase tracking-[0.5em]">{t('products.noEntries')}</p>
               <Link to="/products" className="mt-8 inline-block text-black font-black border-b-2 border-black pb-1">{t('products.resetIndex')}</Link>

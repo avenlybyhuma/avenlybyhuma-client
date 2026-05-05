@@ -11,6 +11,7 @@ import Hero from '../components/sections/Hero';
 import FlashSale from '../components/sections/FlashSale';
 import { motion } from 'framer-motion';
 import Loader from '../components/common/Loader';
+import { ProductSkeleton, CategorySkeleton } from '../components/common/Skeleton';
 import { useLanguage } from '../context/LanguageContext';
 
 
@@ -69,7 +70,8 @@ const Home: React.FC = () => {
     fetchData();
   }, []);
 
-  if (loading) return <Loader fullPage color="#4A5D4E" />;
+  // Remove the early return to allow the page structure to show immediately
+  // if (loading) return <Loader fullPage color="#4A5D4E" />;
 
   const hero = cmsContent?.hero || {};
   const impact = cmsContent?.impact || {};
@@ -116,21 +118,25 @@ const Home: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.slice(0, 4).map((cat, idx) => (
-            <Link key={cat._id || idx} to={`/products?category=${cat.name || cat}`} className="group block text-center">
-              <div className="aspect-[4/5] bg-stone/20 overflow-hidden mb-4 relative rounded-md shadow-sm group-hover:shadow-lg transition-all duration-300">
-                <img
-                  src={cat.image?.url || cat.image || `https://images.unsplash.com/photo-1522771753035-0a15395037be?q=80&w=1000&auto=format&fit=crop`}
-                  onError={(e) => (e.currentTarget.src = 'https://images.unsplash.com/photo-1522771753035-0a15395037be?q=80&w=1000')}
-                  alt={cat.name}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
-              </div>
-              <h3 className="text-lg font-serif font-medium group-hover:text-sage transition-colors">{cat.name || cat}</h3>
-            </Link>
-          ))}
-          {categories.length === 0 && (
+          {loading ? (
+            Array(4).fill(0).map((_, idx) => <CategorySkeleton key={idx} />)
+          ) : (
+            categories.slice(0, 4).map((cat, idx) => (
+              <Link key={cat._id || idx} to={`/products?category=${cat.name || cat}`} className="group block text-center">
+                <div className="aspect-[4/5] bg-stone/20 overflow-hidden mb-4 relative rounded-md shadow-sm group-hover:shadow-lg transition-all duration-300">
+                  <img
+                    src={cat.image?.url || cat.image || `https://images.unsplash.com/photo-1522771753035-0a15395037be?q=80&w=1000&auto=format&fit=crop`}
+                    onError={(e) => (e.currentTarget.src = 'https://images.unsplash.com/photo-1522771753035-0a15395037be?q=80&w=1000')}
+                    alt={cat.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
+                </div>
+                <h3 className="text-lg font-serif font-medium group-hover:text-sage transition-colors">{cat.name || cat}</h3>
+              </Link>
+            ))
+          )}
+          {!loading && categories.length === 0 && (
             ['Bedding', 'Bath', 'Robes', 'Accessories'].map((cat, idx) => (
               <Link key={idx} to="/products" className="group block text-center">
                 <div className="aspect-[4/5] bg-stone/20 overflow-hidden mb-4 rounded-sm">
@@ -163,9 +169,13 @@ const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-            {products.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              Array(8).fill(0).map((_, idx) => <ProductSkeleton key={idx} />)
+            ) : (
+              products.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
           </div>
 
           <div className="mt-12 text-center md:hidden">
