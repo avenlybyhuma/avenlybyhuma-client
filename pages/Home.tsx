@@ -15,6 +15,9 @@ import Skeleton, { ProductSkeleton, CategorySkeleton, TextSkeleton, HeroSkeleton
 import { useLanguage } from '../context/LanguageContext';
 
 
+import MainLoader from '../components/common/MainLoader';
+
+
 const normalizeProduct = (product: any): Product => ({
   ...product,
   id: product._id || product.id,
@@ -35,23 +38,20 @@ const Home: React.FC = () => {
   const [productsLoading, setProductsLoading] = useState(true);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
 
-  useEffect(() => {
-    // 1. Fetch CMS content (Hero, Impact, etc.)
-    const fetchCMS = async () => {
-      try {
-        const contentData = await contentService.getContent('home_page');
-        setCmsContent(contentData);
-      } catch (err) {
-        console.error('Failed to load CMS content', err);
-      } finally {
-        setCmsLoading(false);
-      }
-    };
+  // Master loading state for the very first initialization
+  const [isInitializing, setIsInitializing] = useState(true);
 
-    // 2. Fetch Categories
-    const fetchCategories = async () => {
+  useEffect(() => {
+    const init = async () => {
       try {
-        const categoriesData = await productService.getCategories();
+        // Fetch CMS and Categories in parallel as they are critical for top-of-page
+        const [contentData, categoriesData] = await Promise.all([
+          contentService.getContent('home_page'),
+          productService.getCategories()
+        ]);
+
+        setCmsContent(contentData);
+        
         let cats = [];
         if (Array.isArray(categoriesData)) {
           cats = categoriesData;
@@ -59,14 +59,17 @@ const Home: React.FC = () => {
           cats = (categoriesData as any).categories;
         }
         setCategories(cats);
+
       } catch (err) {
-        console.error('Failed to load categories', err);
+        console.error('Initialization failed', err);
       } finally {
+        setCmsLoading(false);
         setCategoriesLoading(false);
+        setIsInitializing(false);
       }
     };
 
-    // 3. Fetch Products
+    // Products can load independently as they are further down
     const fetchProducts = async () => {
       try {
         const productsData = await productService.getProducts({ limit: 8 });
@@ -81,11 +84,13 @@ const Home: React.FC = () => {
       }
     };
 
-    // Trigger all in parallel but they will update state independently
-    fetchCMS();
-    fetchCategories();
+    init();
     fetchProducts();
   }, []);
+
+  if (isInitializing) {
+    return <MainLoader />;
+  }
 
   const loading = cmsLoading; // For sections that depend on both, or as a base indicator
 
