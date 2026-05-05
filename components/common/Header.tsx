@@ -40,6 +40,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
   const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const announcements = headerConfig.topBarText.split('|').map(t => t.trim());
 
@@ -58,19 +59,19 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
   const location = useLocation();
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
-        const cats = await productService.getCategories();
-        const catNames = ['All', ...cats.map((c: any) => c.name)];
-        setCategories(catNames);
-      } catch (err) {
-        console.error('Failed to load categories');
-      }
-    };
+        setLoading(true);
+        const [cats, content] = await Promise.all([
+          productService.getCategories(),
+          contentService.getContent('home_page')
+        ]);
 
-    const fetchSettings = async () => {
-      try {
-        const content = await contentService.getContent('home_page');
+        if (cats) {
+          const catNames = ['All', ...cats.map((c: any) => c.name)];
+          setCategories(catNames);
+        }
+
         if (content) {
           if (content.siteSettings) {
             setSiteSettings({
@@ -87,12 +88,13 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
           }
         }
       } catch (err) {
-        console.error('Failed to load site settings');
+        console.error('Failed to load header data', err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCategories();
-    fetchSettings();
+    fetchData();
   }, []);
 
   const handleTrackOrder = async (e: React.FormEvent) => {
@@ -168,15 +170,19 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
       <header className={headerClass}>
         {headerConfig.announcementEnabled && (
           <div className="bg-sage text-white py-1.5 relative h-8 overflow-hidden flex items-center justify-center text-[10px] md:text-xs font-medium tracking-widest uppercase transition-all">
-            {announcements.map((text, idx) => (
-              <div
-                key={idx}
-                className={`absolute inset-0 flex items-center justify-center transition-all duration-1000 ${idx === currentAnnouncement ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                  }`}
-              >
-                {text}
-              </div>
-            ))}
+            {loading ? (
+              <div className="w-48 h-2 bg-white/20 animate-pulse rounded-full" />
+            ) : (
+              announcements.map((text, idx) => (
+                <div
+                  key={idx}
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-1000 ${idx === currentAnnouncement ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+                    }`}
+                >
+                  {text}
+                </div>
+              ))
+            )}
           </div>
         )}
         <div className={`w-full max-w-7xl mx-auto px-4 lg:px-8 flex items-center gap-2 min-h-[70px] md:min-h-[90px] ${isScrolled || !isHome ? 'py-3' : 'py-4'}`}>
@@ -250,7 +256,9 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
               to="/"
               className="text-2xl md:text-3xl font-serif font-bold tracking-tight text-primary flex items-center justify-center transition-all duration-300 transform"
             >
-              {siteSettings.logoUrl ? (
+              {loading ? (
+                <div className="w-32 h-8 bg-primary/5 animate-pulse rounded-md" />
+              ) : siteSettings.logoUrl ? (
                 <img src={siteSettings.logoUrl} alt={siteSettings.siteName} className="h-14 sm:h-16 md:h-24 w-auto object-contain" />
               ) : (
                 <span>{siteSettings.siteName}</span>

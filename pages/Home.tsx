@@ -11,7 +11,7 @@ import Hero from '../components/sections/Hero';
 import FlashSale from '../components/sections/FlashSale';
 import { motion } from 'framer-motion';
 import Loader from '../components/common/Loader';
-import { ProductSkeleton, CategorySkeleton } from '../components/common/Skeleton';
+import { ProductSkeleton, CategorySkeleton, TextSkeleton, HeroSkeleton } from '../components/common/Skeleton';
 import { useLanguage } from '../context/LanguageContext';
 
 
@@ -35,13 +35,11 @@ const Home: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Step 1: Fetch CMS content first to get the dynamic limit
-        const contentData = await contentService.getContent('home_page');
-        const limit = contentData?.latestAdditions?.count || 8;
-
-        // Step 2: Fetch products and categories
-        const [productsData, categoriesData] = await Promise.all([
-          productService.getProducts({ limit }),
+        
+        // Fetch everything in parallel to reduce total loading time
+        const [contentData, productsData, categoriesData] = await Promise.all([
+          contentService.getContent('home_page'),
+          productService.getProducts({ limit: 8 }), // Use a reasonable default limit
           productService.getCategories()
         ]);
 
@@ -86,19 +84,28 @@ const Home: React.FC = () => {
       {/* 1. USP Bar (Top of Home) */}
       <div className="bg-sage/10 py-3 border-b border-sage/5">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 text-xs md:text-sm font-sans tracking-wide text-primary/80">
-          {usps.map((usp: any, idx: number) => (
-            <div key={idx} className="flex items-center gap-2">
-              {idx === 0 && <Leaf className="h-4 w-4" />}
-              {idx === 1 && <Recycle className="h-4 w-4" />}
-              {idx === 2 && <Star className="h-4 w-4" />}
-              <span>{usp.text}</span>
-            </div>
-          ))}
+          {loading ? (
+            Array(3).fill(0).map((_, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <Skeleton className="h-4 w-4 rounded-full" />
+                <TextSkeleton width="w-32" height="h-3" />
+              </div>
+            ))
+          ) : (
+            usps.map((usp: any, idx: number) => (
+              <div key={idx} className="flex items-center gap-2">
+                {idx === 0 && <Leaf className="h-4 w-4" />}
+                {idx === 1 && <Recycle className="h-4 w-4" />}
+                {idx === 2 && <Star className="h-4 w-4" />}
+                <span>{usp.text}</span>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
       {/* 2. Hero Section */}
-      <Hero cmsData={cmsContent} />
+      {loading ? <HeroSkeleton /> : <Hero cmsData={cmsContent} />}
 
       {/* 2.5 Flash Sale Section */}
 
@@ -267,10 +274,14 @@ const Home: React.FC = () => {
                 transition={{ duration: 1, ease: [0.33, 1, 0.68, 1] }}
                 className="text-6xl md:text-7xl font-serif font-light mb-10 leading-[1.1] text-primary"
               >
-                {impact.title || t('home.changeTheWorld')} <br />
-                <span className="italic text-primary/60 font-serif block mt-3 indent-8 md:indent-16">
-                  {impact.highlight || t('home.whileYouSleep')}
-                </span>
+                {loading ? <TextSkeleton width="w-full" height="h-16" className="mb-4" /> : (
+                  <>
+                    {impact.title || t('home.changeTheWorld')} <br />
+                    <span className="italic text-primary/60 font-serif block mt-3 indent-8 md:indent-16">
+                      {impact.highlight || t('home.whileYouSleep')}
+                    </span>
+                  </>
+                )}
               </motion.h2>
 
               <motion.p
@@ -280,28 +291,45 @@ const Home: React.FC = () => {
                 }}
                 className="text-primary/60 font-sans leading-[1.8] text-lg mb-12 max-w-lg"
               >
-                {impact.description || t('home.impactDesc')}
+                {loading ? (
+                  <div className="space-y-2">
+                    <TextSkeleton width="w-full" height="h-4" />
+                    <TextSkeleton width="w-5/6" height="h-4" />
+                    <TextSkeleton width="w-4/6" height="h-4" />
+                  </div>
+                ) : (
+                  impact.description || t('home.impactDesc')
+                )}
               </motion.p>
 
               {/* Minimalist Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-t border-primary/5 pt-12">
-                {[
-                  { label: t('home.certifiedOrganic'), value: "100%" },
-                  { label: t('home.zeroPlastics'), value: "0%" },
-                  { label: t('home.ethicallyMade'), value: "Fair" }
-                ].map((stat, i) => (
-                  <motion.div
-                    key={i}
-                    variants={{
-                      hidden: { opacity: 0, y: 20 },
-                      visible: { opacity: 1, y: 0 }
-                    }}
-                    className="space-y-2"
-                  >
-                    <h4 className="font-serif text-3xl text-primary">{stat.value}</h4>
-                    <p className="text-[10px] text-primary/40 uppercase tracking-[0.2em] font-bold">{stat.label}</p>
-                  </motion.div>
-                ))}
+                {loading ? (
+                  Array(3).fill(0).map((_, i) => (
+                    <div key={i} className="space-y-2">
+                      <TextSkeleton width="w-16" height="h-8" />
+                      <TextSkeleton width="w-24" height="h-3" />
+                    </div>
+                  ))
+                ) : (
+                  [
+                    { label: t('home.certifiedOrganic'), value: "100%" },
+                    { label: t('home.zeroPlastics'), value: "0%" },
+                    { label: t('home.ethicallyMade'), value: "Fair" }
+                  ].map((stat, i) => (
+                    <motion.div
+                      key={i}
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0 }
+                      }}
+                      className="space-y-2"
+                    >
+                      <h4 className="font-serif text-3xl text-primary">{stat.value}</h4>
+                      <p className="text-[10px] text-primary/40 uppercase tracking-[0.2em] font-bold">{stat.label}</p>
+                    </motion.div>
+                  ))
+                )}
               </div>
 
               <motion.div

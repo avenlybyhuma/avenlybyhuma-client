@@ -6,7 +6,24 @@ interface SkeletonProps {
 
 const Skeleton: React.FC<SkeletonProps> = ({ className }) => {
     return (
-        <div className={`animate-pulse bg-gray-200 rounded ${className}`} />
+        <div className={`animate-pulse bg-gray-200/60 rounded ${className}`} />
+    );
+};
+
+export const TextSkeleton: React.FC<{ width?: string, height?: string, className?: string }> = ({ width = 'w-full', height = 'h-4', className = '' }) => {
+    return <Skeleton className={`${width} ${height} ${className}`} />;
+};
+
+export const HeroSkeleton: React.FC = () => {
+    return (
+        <div className="relative h-[85vh] w-full bg-stone/20 overflow-hidden">
+            <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
+                <TextSkeleton width="w-24" height="h-3" className="mb-4" />
+                <TextSkeleton width="w-3/4" height="h-12" className="mb-6" />
+                <TextSkeleton width="w-1/2" height="h-4" className="mb-10" />
+                <Skeleton className="w-40 h-12" />
+            </div>
+        </div>
     );
 };
 
