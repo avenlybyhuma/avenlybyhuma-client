@@ -179,10 +179,10 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
             ))}
           </div>
         )}
-        <div className={`w-full max-w-7xl mx-auto px-6 lg:px-12 flex items-center min-h-[70px] md:min-h-[90px] ${isScrolled || !isHome ? 'py-3' : 'py-4'}`}>
+        <div className={`w-full max-w-7xl mx-auto px-4 lg:px-8 flex items-center gap-2 min-h-[70px] md:min-h-[90px] ${isScrolled || !isHome ? 'py-3' : 'py-4'}`}>
 
           {/* Column 1: Mobile Menu & Desktop Nav */}
-          <div className="flex-1 flex items-center justify-start">
+          <div className="flex-1 min-w-0 flex items-center justify-start">
             {/* Mobile Menu Button */}
             <button
               onClick={() => setMobileMenuOpen(true)}
@@ -192,7 +192,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
             </button>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center space-x-8">
+            <nav className="hidden lg:flex items-center space-x-5 xl:space-x-7">
               <Link to="/" className={linkClass}>{t('nav.home')}</Link>
 
               {/* Categories Dropdown */}
@@ -226,7 +226,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
               <Link to="/about" className={linkClass}>{t('nav.ourStory')}</Link>
 
               {/* Language Switcher Desktop */}
-              <div className="flex items-center gap-4 ml-4 pl-4 border-l border-primary/10">
+              <div className="flex items-center gap-2 xl:gap-4 ml-2 pl-2 xl:pl-4 border-l border-primary/10">
                 <button 
                   onClick={() => setLanguage('en')}
                   className={`flex items-center gap-1 text-[10px] font-black tracking-widest transition-colors ${language === 'en' ? 'text-sage' : 'text-primary/40 hover:text-primary'}`}
@@ -245,7 +245,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
           </div>
 
           {/* Column 2: Logo (Centered) */}
-          <div className="flex-shrink-0 flex items-center justify-center px-4">
+          <div className="flex-shrink-0 flex items-center justify-center px-2 xl:px-4">
             <Link
               to="/"
               className="text-2xl md:text-3xl font-serif font-bold tracking-tight text-primary flex items-center justify-center transition-all duration-300 transform"
@@ -259,7 +259,7 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
           </div>
 
           {/* Column 3: Icons */}
-          <div className="flex-1 flex items-center justify-end space-x-4 md:space-x-6">
+          <div className="flex-1 min-w-0 flex items-center justify-end space-x-3 md:space-x-5">
             <button
               onClick={() => setSearchOpen(true)}
               className="text-primary hover:text-sage transition-colors duration-300"
