@@ -29,47 +29,65 @@ const Home: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [cmsContent, setCmsContent] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  
+  // Separate loading states for incremental UI updates
+  const [cmsLoading, setCmsLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    // 1. Fetch CMS content (Hero, Impact, etc.)
+    const fetchCMS = async () => {
       try {
-        setLoading(true);
+        const contentData = await contentService.getContent('home_page');
+        setCmsContent(contentData);
+      } catch (err) {
+        console.error('Failed to load CMS content', err);
+      } finally {
+        setCmsLoading(false);
+      }
+    };
 
-        // Fetch everything in parallel to reduce total loading time
-        const [contentData, productsData, categoriesData] = await Promise.all([
-          contentService.getContent('home_page'),
-          productService.getProducts({ limit: 8 }), // Use a reasonable default limit
-          productService.getCategories()
-        ]);
-
-        // Handle Products
-        let prods = [];
-        if (productsData.products) prods = productsData.products;
-        else if (Array.isArray(productsData)) prods = productsData;
-
-        // Handle Categories
+    // 2. Fetch Categories
+    const fetchCategories = async () => {
+      try {
+        const categoriesData = await productService.getCategories();
         let cats = [];
         if (Array.isArray(categoriesData)) {
           cats = categoriesData;
         } else if ((categoriesData as any)?.categories && Array.isArray((categoriesData as any).categories)) {
           cats = (categoriesData as any).categories;
         }
-
-        setProducts(prods.map(normalizeProduct));
         setCategories(cats);
-        setCmsContent(contentData);
       } catch (err) {
-        console.error('Failed to load home data', err);
+        console.error('Failed to load categories', err);
       } finally {
-        setLoading(false);
+        setCategoriesLoading(false);
       }
     };
-    fetchData();
+
+    // 3. Fetch Products
+    const fetchProducts = async () => {
+      try {
+        const productsData = await productService.getProducts({ limit: 8 });
+        let prods = [];
+        if (productsData.products) prods = productsData.products;
+        else if (Array.isArray(productsData)) prods = productsData;
+        setProducts(prods.map(normalizeProduct));
+      } catch (err) {
+        console.error('Failed to load products', err);
+      } finally {
+        setProductsLoading(false);
+      }
+    };
+
+    // Trigger all in parallel but they will update state independently
+    fetchCMS();
+    fetchCategories();
+    fetchProducts();
   }, []);
 
-  // Remove the early return to allow the page structure to show immediately
-  // if (loading) return <Loader fullPage color="#4A5D4E" />;
+  const loading = cmsLoading; // For sections that depend on both, or as a base indicator
 
   const hero = cmsContent?.hero || {};
   const impact = cmsContent?.impact || {};
@@ -84,7 +102,7 @@ const Home: React.FC = () => {
       {/* 1. USP Bar (Top of Home) */}
       <div className="bg-sage/10 py-3 border-b border-sage/5">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-center items-center gap-4 md:gap-12 text-xs md:text-sm font-sans tracking-wide text-primary/80">
-          {loading ? (
+          {cmsLoading ? (
             Array(3).fill(0).map((_, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <Skeleton className="h-4 w-4 rounded-full" />
@@ -105,7 +123,7 @@ const Home: React.FC = () => {
       </div>
 
       {/* 2. Hero Section */}
-      {loading ? <HeroSkeleton /> : <Hero cmsData={cmsContent} />}
+      {cmsLoading ? <HeroSkeleton /> : <Hero cmsData={cmsContent} />}
 
       {/* 2.5 Flash Sale Section */}
 
@@ -125,7 +143,7 @@ const Home: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {loading ? (
+          {categoriesLoading ? (
             Array(4).fill(0).map((_, idx) => <CategorySkeleton key={idx} />)
           ) : (
             categories.slice(0, 4).map((cat, idx) => (
@@ -143,7 +161,7 @@ const Home: React.FC = () => {
               </Link>
             ))
           )}
-          {!loading && categories.length === 0 && (
+          {!categoriesLoading && categories.length === 0 && (
             ['Bedding', 'Bath', 'Robes', 'Accessories'].map((cat, idx) => (
               <Link key={idx} to="/products" className="group block text-center">
                 <div className="aspect-[4/5] bg-stone/20 overflow-hidden mb-4 rounded-sm">
@@ -176,7 +194,7 @@ const Home: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-            {loading ? (
+            {productsLoading ? (
               Array(8).fill(0).map((_, idx) => <ProductSkeleton key={idx} />)
             ) : (
               products.map(product => (
@@ -192,7 +210,7 @@ const Home: React.FC = () => {
       </motion.section>
 
 
-      <FlashSale cmsData={cmsContent?.flashSale} />
+      {!cmsLoading && <FlashSale cmsData={cmsContent?.flashSale} />}
 
       {/* 5. Our Impact / Story - Professional Editorial Redesign */}
       <section className="py-40 px-6 bg-[#FAF9F6] overflow-hidden">
@@ -274,7 +292,7 @@ const Home: React.FC = () => {
                 transition={{ duration: 1, ease: [0.33, 1, 0.68, 1] }}
                 className="text-6xl md:text-7xl font-serif font-light mb-10 leading-[1.1] text-primary"
               >
-                {loading ? <TextSkeleton width="w-full" height="h-16" className="mb-4" /> : (
+                {cmsLoading ? <TextSkeleton width="w-full" height="h-16" className="mb-4" /> : (
                   <>
                     {impact.title || t('home.changeTheWorld')} <br />
                     <span className="italic text-primary/60 font-serif block mt-3 indent-8 md:indent-16">
@@ -291,7 +309,7 @@ const Home: React.FC = () => {
                 }}
                 className="text-primary/60 font-sans leading-[1.8] text-lg mb-12 max-w-lg"
               >
-                {loading ? (
+                {cmsLoading ? (
                   <div className="space-y-2">
                     <TextSkeleton width="w-full" height="h-4" />
                     <TextSkeleton width="w-5/6" height="h-4" />
@@ -304,7 +322,7 @@ const Home: React.FC = () => {
 
               {/* Minimalist Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-t border-primary/5 pt-12">
-                {loading ? (
+                {cmsLoading ? (
                   Array(3).fill(0).map((_, i) => (
                     <div key={i} className="space-y-2">
                       <TextSkeleton width="w-16" height="h-8" />
