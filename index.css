@@ -1,6 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2C3E50;
+  --color-secondary: #95A5A6;
+  --color-accent: #D4AC0D;
+  --color-sand: #F5F5F1;
+  --color-stone: #Eae7e0;
+  --color-sage: #8F9779;
+  --color-earth: #5D5C61;
+  
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-serif: Arial, Helvetica, sans-serif;
+}
 
 :root {
   --bg: #F5F5F1;
@@ -8,14 +19,13 @@
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   background-color: var(--bg);
   color: var(--text);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Add any custom styles here */
 .fade-in {
   animation: fadeIn 0.8s ease-in-out forwards;
 }
