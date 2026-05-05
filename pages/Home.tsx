@@ -11,7 +11,7 @@ import Hero from '../components/sections/Hero';
 import FlashSale from '../components/sections/FlashSale';
 import { motion } from 'framer-motion';
 import Loader from '../components/common/Loader';
-import { ProductSkeleton, CategorySkeleton, TextSkeleton, HeroSkeleton } from '../components/common/Skeleton';
+import Skeleton, { ProductSkeleton, CategorySkeleton, TextSkeleton, HeroSkeleton } from '../components/common/Skeleton';
 import { useLanguage } from '../context/LanguageContext';
 
 
@@ -35,7 +35,7 @@ const Home: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // Fetch everything in parallel to reduce total loading time
         const [contentData, productsData, categoriesData] = await Promise.all([
           contentService.getContent('home_page'),
