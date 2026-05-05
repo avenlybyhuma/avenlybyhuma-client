@@ -50,10 +50,13 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdDisplayManager from './components/common/AdDisplayManager';
 import CookieConsent from './components/common/CookieConsent';
 
-// Minimal spinner shown during page transitions
+// Minimal branded loader shown during page transitions
 const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-[60vh]">
-    <div className="animate-spin h-8 w-8 border-[3px] border-[#f85606] border-t-transparent rounded-full" />
+  <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8 animate-in fade-in duration-500">
+    <div className="text-xl tracking-[0.4em] font-light text-primary/40 uppercase">AVENLY</div>
+    <div className="w-32 h-[1px] bg-primary/5 overflow-hidden relative">
+      <div className="absolute inset-0 bg-sage w-1/3 animate-[horizontalMove_1.5s_infinite_ease-in-out]" />
+    </div>
   </div>
 );
 
