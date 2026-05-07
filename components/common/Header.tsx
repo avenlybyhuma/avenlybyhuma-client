@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Search, User, Menu, ArrowRight, X, LogOut, ChevronDown, LogIn } from 'lucide-react';
+import { ShoppingCart, Search, User, Menu, ArrowRight, X, LogOut, ChevronDown, LogIn, Globe } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -230,23 +230,6 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
 
               <Link to="/products" className={linkClass}>{t('nav.shopAll')}</Link>
               <Link to="/about" className={linkClass}>{t('nav.ourStory')}</Link>
-
-              {/* Language Switcher Desktop */}
-              <div className="flex items-center gap-2 xl:gap-4 ml-2 pl-2 xl:pl-4 border-l border-primary/10">
-                <button 
-                  onClick={() => setLanguage('en')}
-                  className={`flex items-center gap-1 text-[10px] font-black tracking-widest transition-colors ${language === 'en' ? 'text-sage' : 'text-primary/40 hover:text-primary'}`}
-                >
-                  <span>🇬🇧</span> EN
-                </button>
-                <span className="text-[10px] text-primary/10">/</span>
-                <button 
-                  onClick={() => setLanguage('sv')}
-                  className={`flex items-center gap-1 text-[10px] font-black tracking-widest transition-colors ${language === 'sv' ? 'text-sage' : 'text-primary/40 hover:text-primary'}`}
-                >
-                  <span>🇸🇪</span> SV
-                </button>
-              </div>
             </nav>
           </div>
 
@@ -274,6 +257,32 @@ const Header: React.FC<{ onCartOpen: () => void }> = ({ onCartOpen }) => {
             >
               <Search className="h-5 w-5 md:h-6 md:w-6" />
             </button>
+
+            {/* Language Dropdown */}
+            <div className="relative group/lang hidden md:block">
+              <button className="flex items-center gap-1.5 text-primary hover:text-sage transition-colors">
+                <Globe className="h-5 w-5 md:h-6 md:w-6" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">{language}</span>
+                <ChevronDown className="h-3 w-3 transition-transform duration-300 group-hover/lang:rotate-180" />
+              </button>
+
+              <div className="absolute top-full right-0 pt-4 opacity-0 translate-y-2 invisible group-hover/lang:opacity-100 group-hover/lang:visible group-hover/lang:translate-y-0 transition-all duration-300 z-[200]">
+                <div className="bg-white border border-secondary/10 rounded-xl shadow-xl py-2 min-w-[140px] overflow-hidden backdrop-blur-sm">
+                  <button
+                    onClick={() => setLanguage('en')}
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-sage/5 transition-colors ${language === 'en' ? 'text-sage' : 'text-primary/60'}`}
+                  >
+                    <span className="text-sm">🇬🇧</span> English
+                  </button>
+                  <button
+                    onClick={() => setLanguage('sv')}
+                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-[10px] font-black uppercase tracking-widest hover:bg-sage/5 transition-colors ${language === 'sv' ? 'text-sage' : 'text-primary/60'}`}
+                  >
+                    <span className="text-sm">🇸🇪</span> Svenska
+                  </button>
+                </div>
+              </div>
+            </div>
 
             <button
               onClick={() => setTrackingModalOpen(true)}
